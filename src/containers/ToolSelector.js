@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { selectTool } from '../modules/svgcanvas';
-const shapes = ['S', 'E', 'R', 'C', 'M'];
+const shapes = ['line', 'ellipse', 'rect', 'C', 'M'];
 
 const ToolDiv = styled.div`
   border: solid 1px;
@@ -11,13 +11,11 @@ const ToolDiv = styled.div`
   margin-right: auto;
 
   padding: 2px;
-
-  width: 25px;
 `;
 
 const ToolContainer = styled.div`
   height: 39px;
-  width: 39px;
+  width: 50px;
 `;
 
 const SelectorDiv = styled.div`

@@ -1,49 +1,81 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SVGCanvas.scss';
+import { getLine } from '../lib/models';
 
-class SVGCanvas extends React.Component {
-  svgRef = React.createRef();
+class SVGCanvas extends Component {
+  ref = React.createRef();
+  state = {
+    crntShape: null,
+  };
 
-  getCoords({ currentX, currentY }) {
-    const { top, left } = this.svgRef.current.getBoundingClientRect();
-    return { x: currentX - left, y: currentY - top };
+  getAbspos({ clientX, clientY }) {
+    console.log(this.ref);
+    const { top, left } = this.ref.current.getBoundingClientRect();
+
+    return { x: clientX - left, y: clientY - top };
   }
 
   handleMouseDown(e) {
+    const { crntShape } = this.state;
     const { shiftKey } = e;
-    const { x: xStart, y: yStart } = this.getCoords(e);
-
-    if (this.state.tool === 'rect') {
+    const { x: x1, y: y1 } = this.getAbspos(e);
+    if (crntShape) {
+      console.log(crntShape);
+      this.setState(() => ({ crntShape: null }));
+    } else {
       this.setState(s => {
         const obj = {
           id: Date.now(),
-          type: 'rect',
-          // bg:
-          //   'rgb(' +
-          //   [
-          //     Math.round(Math.random() * 255),
-          //     Math.round(Math.random() * 255),
-          //     Math.round(Math.random() * 255),
-          //   ] +
-          //   ')',
-          xStart,
-          yStart,
-          xEnd: xStart,
-          yEnd: yStart,
+          type: this.props.selectedTool,
+          stroke: this.props.selectedColor,
+          width: this.props.selectedSize,
+          x1: x1,
+          y1: y1,
+          x2: x1,
+          y2: y1,
+
           locked: shiftKey,
         };
+
         return {
-          objects: [...s.objects, obj],
-          rectObject: obj.id,
+          crntShape: obj,
+        };
+      });
+    }
+  }
+
+  handleMouseMove(e) {
+    const { crntShape } = this.state;
+    console.log(crntShape);
+    if (crntShape) {
+      const { x: x2, y: y2 } = this.getAbspos(e);
+      const obj = {
+        x2,
+        y2,
+        locked: e.shiftKey,
+      };
+      console.log(obj);
+
+      this.setState(s => {
+        return {
+          crntShape: { ...s.crntShape, ...obj },
         };
       });
     }
   }
 
   render() {
-    console.log(this.props.objs);
-    return <svg className="Svg"></svg>;
+    return (
+      <svg
+        className="Svg"
+        onMouseDown={this.handleMouseDown.bind(this)}
+        onMouseMove={this.handleMouseMove.bind(this)}
+        ref={this.ref}
+      >
+        {this.state.crntShape !== null ? getLine(this.state.crntShape) : null}
+      </svg>
+    );
   }
 }
 
@@ -51,6 +83,7 @@ let mapStateToProps = ({ svgcanvas }) => ({
   objs: svgcanvas.objs,
   selectedColor: svgcanvas.selectedColor,
   selectedTool: svgcanvas.selectedTool,
+  selectedSize: svgcanvas.selectedSize,
 });
 
 export default connect(mapStateToProps)(SVGCanvas);
