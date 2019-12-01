@@ -57,6 +57,7 @@ class SVGCanvas extends Component {
         // };
 
         return {
+          ...s,
           crntShape: obj,
         };
       });
