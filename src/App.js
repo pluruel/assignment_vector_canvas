@@ -1,7 +1,5 @@
 import React from 'react';
 import './App.css';
-import DrawCanvas from './components/DrawCanvas';
-import Editor from './components/Editor';
 import SVGCanvas from './components/SVGCanvas';
 import ColorSelector from './containers/ColorSelector';
 import styled from 'styled-components';
@@ -9,6 +7,7 @@ import ToolSelector from './containers/ToolSelector';
 import Header from './containers/Header';
 import SVGImport from './containers/SVGImport';
 import { MdUndo, MdRedo } from 'react-icons/md';
+import SizeSetter from './components/SizeSetter';
 
 const MainDiv = styled.div`
   display: flex;
@@ -26,6 +25,7 @@ function App() {
       <Header />
       <UpperPart>
         <div style={{ marginLeft: 'auto' }} />
+        <SizeSetter />
         <MdUndo />
         <MdRedo />
       </UpperPart>

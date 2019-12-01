@@ -7,7 +7,7 @@ import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './modules';
-import { composeWithDevTools } from 'redux-devtools-extension';
+
 const logger = createLogger();
 
 const store = createStore(rootReducer, applyMiddleware(logger));
