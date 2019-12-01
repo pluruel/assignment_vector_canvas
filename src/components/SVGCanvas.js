@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SVGCanvas.scss';
 import { getLine } from '../lib/models';
+import { parse, stringify } from 'svgson';
+import Parser from 'html-react-parser';
 
 class SVGCanvas extends Component {
   ref = React.createRef();
@@ -64,6 +66,7 @@ class SVGCanvas extends Component {
   }
 
   render() {
+    console.log(stringify(this.props.objs));
     return (
       <svg
         className="Svg"
@@ -71,6 +74,7 @@ class SVGCanvas extends Component {
         onMouseMove={this.handleMouseMove.bind(this)}
         ref={this.ref}
       >
+        {this.props.objs.map(e => Parser(stringify(e)))}
         {this.state.crntShape !== null ? getLine(this.state.crntShape) : null}
       </svg>
     );
@@ -78,7 +82,7 @@ class SVGCanvas extends Component {
 }
 
 let mapStateToProps = ({ svgcanvas }) => ({
-  objs: svgcanvas.objs,
+  objs: svgcanvas.obj.children,
   selectedColor: svgcanvas.selectedColor,
   selectedTool: svgcanvas.selectedTool,
   selectedSize: svgcanvas.selectedSize,

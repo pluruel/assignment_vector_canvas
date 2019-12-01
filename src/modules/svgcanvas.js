@@ -13,7 +13,42 @@ const initialState = {
   selectedColor: '#000000',
   selectedTool: 'R',
   selectedSize: '5',
-  obj: [[]],
+  obj: {
+    name: 'svg',
+    type: 'element',
+    value: '',
+    attributes: {},
+    children: [
+      {
+        name: 'line',
+        type: 'element',
+        value: '',
+        attributes: {
+          stroke: '#000000',
+          'stroke-width': '1',
+          x1: '100',
+          y1: '80',
+          x2: '250',
+          y2: '150',
+        },
+        children: [],
+      },
+      {
+        name: 'line',
+        type: 'element',
+        value: '',
+        attributes: {
+          stroke: '#000000',
+          'stroke-width': '1',
+          x1: '70',
+          y1: '80',
+          x2: '250',
+          y2: '150',
+        },
+        children: [],
+      },
+    ],
+  },
 };
 
 const svgcanvas = handleActions(
