@@ -21,7 +21,6 @@ class SVGCanvas extends Component {
     const { shiftKey } = e;
     const { x: x1, y: y1 } = this.getAbspos(e);
     if (crntShape) {
-      console.log(crntShape);
       this.setState(() => ({ crntShape: null }));
     } else {
       this.setState(s => {
@@ -34,7 +33,6 @@ class SVGCanvas extends Component {
           y1: y1,
           x2: x1,
           y2: y1,
-
           locked: shiftKey,
         };
 
