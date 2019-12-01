@@ -1,24 +1,22 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import DrawCanvas from './components/DrawCanvas';
+import Editor from './components/Editor';
+import SVGCanvas from './components/SVGCanvas';
+import ColorSelector from './components/ColorSelector';
+import styled from 'styled-components';
+
+const MainDiv = styled.div`
+  display: flex;
+`;
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <MainDiv>
+        <ColorSelector />
+        <SVGCanvas />
+      </MainDiv>
     </div>
   );
 }
