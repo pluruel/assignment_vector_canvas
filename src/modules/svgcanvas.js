@@ -5,11 +5,15 @@ const SELECT_COLOR = 'svgcanvas/SELECT_COLOR';
 const SELECT_TOOL = 'svgcanvas/SELECT_TOOL';
 const SELECT_SIZE = 'svgcanvas/SELECT_SIZE';
 const ADD_SHAPE = 'svgcanvas/ADD_SHAPE';
+const UNDO = 'svgcanvas/UNDO';
+const REDO = 'svgcanvas/REDO';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
 export const selectSize = createAction(SELECT_SIZE);
 export const addShape = createAction(ADD_SHAPE);
+export const undo = createAction(UNDO);
+export const redo = createAction(REDO);
 
 const initialState = {
   selectedColor: '#000000',
@@ -81,6 +85,14 @@ const svgcanvas = handleActions(
           action.payload,
         ],
       },
+    }),
+    [UNDO]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep - 1,
+    }),
+    [REDO]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep + 1,
     }),
   },
   initialState,

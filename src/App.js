@@ -8,6 +8,8 @@ import Header from './containers/Header';
 import SVGImport from './containers/SVGImport';
 import { MdUndo, MdRedo } from 'react-icons/md';
 import SizeSetter from './components/SizeSetter';
+import { undo, redo } from './modules/svgcanvas';
+import { connect } from 'react-redux';
 
 const MainDiv = styled.div`
   display: flex;
@@ -19,15 +21,15 @@ const LowerPart = styled.div`
   display: flex;
 `;
 
-function App() {
+function App({ undo, redo }) {
   return (
     <div className="App">
       <Header />
       <UpperPart>
         <div style={{ marginLeft: 'auto' }} />
         <SizeSetter />
-        <MdUndo />
-        <MdRedo />
+        <MdUndo onClick={() => undo()} />
+        <MdRedo onClick={() => redo()} />
       </UpperPart>
       <MainDiv>
         <ToolSelector />
@@ -42,4 +44,9 @@ function App() {
   );
 }
 
-export default App;
+const mapFunction = {
+  undo,
+  redo,
+};
+
+export default connect(null, mapFunction)(App);
