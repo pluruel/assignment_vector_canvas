@@ -4,21 +4,27 @@ import produce from 'immer';
 const SELECT_COLOR = 'svgcanvas/SELECT_COLOR';
 const SELECT_TOOL = 'svgcanvas/SELECT_TOOL';
 const SELECT_SIZE = 'svgcanvas/SELECT_SIZE';
+const ADD_SHAPE = 'svgcanvas/ADD_SHAPE';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
 export const selectSize = createAction(SELECT_SIZE);
+export const addShape = createAction(ADD_SHAPE);
 
 const initialState = {
   selectedColor: '#000000',
   selectedTool: 'R',
   selectedSize: '5',
-  obj: {
+  svgdefault: {
     name: 'svg',
     type: 'element',
     value: '',
     attributes: {},
-    children: [
+    children: [],
+  },
+  currentStep: 0,
+  obj: [
+    [
       {
         name: 'line',
         type: 'element',
@@ -48,7 +54,7 @@ const initialState = {
         children: [],
       },
     ],
-  },
+  ],
 };
 
 const svgcanvas = handleActions(
@@ -64,6 +70,17 @@ const svgcanvas = handleActions(
     [SELECT_SIZE]: (state, action) => ({
       ...state,
       selectedSize: action.payload.target.value,
+    }),
+    [ADD_SHAPE]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep + 1,
+      obj: {
+        ...state.obj,
+        [state.currentStep + 1]: [
+          ...state.obj[state.currentStep],
+          action.payload,
+        ],
+      },
     }),
   },
   initialState,
