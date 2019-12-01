@@ -25,12 +25,12 @@ const SelectorDiv = styled.div`
   margin-top: 4px;
 `;
 
-const ColorSelector = ({ selectedTool, selectTool }) => (
+const ToolSelector = ({ selectedTool, selectTool }) => (
   <SelectorDiv>
     {shapes.map((e, idx) => (
-      <ToolContainer>
+      <ToolContainer key={e}>
         <ToolDiv
-          key={idx}
+          key={e}
           style={{
             border:
               selectedTool === e ? 'solid black 2.5px ' : 'solid black 1px ',
@@ -52,4 +52,4 @@ const mapFunction = {
   selectTool,
 };
 
-export default connect(mapStateToProps, mapFunction)(ColorSelector);
+export default connect(mapStateToProps, mapFunction)(ToolSelector);

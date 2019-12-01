@@ -3,10 +3,11 @@ import produce from 'immer';
 
 const SELECT_COLOR = 'svgcanvas/SELECT_COLOR';
 const SELECT_TOOL = 'svgcanvas/SELECT_TOOL';
+
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
 
-const initialState = { selectedColor: '#000000', selectedTool: 'R' };
+const initialState = { selectedColor: '#000000', selectedTool: 'R', obj: [[]] };
 
 const svgcanvas = handleActions(
   {

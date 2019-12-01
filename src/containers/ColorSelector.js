@@ -27,10 +27,10 @@ const SelectorDiv = styled.div`
 
 const ColorSelector = ({ selectedColor, selectColor }) => (
   <SelectorDiv>
-    {colors.map((e, idx) => (
-      <ColorContainer>
+    {colors.map(e => (
+      <ColorContainer key={e}>
         <ColorDiv
-          key={idx}
+          key={e}
           style={{
             backgroundColor: e,
             border:
