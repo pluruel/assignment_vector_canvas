@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { selectColor } from '../modules/svgcanvas';
 const colors = ['#0000ff', '#ff0000', '#00ff00', '#000000', '#ffffff'];
 
-const Div = styled.div`
+const ColorDiv = styled.div`
   border: solid 1px;
   height: 25px;
   margin-left: auto;
@@ -15,7 +15,7 @@ const Div = styled.div`
   width: 25px;
 `;
 
-const Div2 = styled.div`
+const ColorContainer = styled.div`
   height: 39px;
   width: 39px;
 `;
@@ -25,29 +25,23 @@ const SelectorDiv = styled.div`
   margin-top: 4px;
 `;
 
-const ColorSelector = ({ selectedColor, selectColor }) => {
-  return (
-    <SelectorDiv>
-      {colors.map((e, idx) => {
-        return (
-          <Div2>
-            <Div
-              key={idx}
-              style={{
-                backgroundColor: e,
-                border:
-                  selectedColor === e
-                    ? 'solid black 2.5px '
-                    : 'solid black 1px ',
-              }}
-              onClick={() => selectColor(e)}
-            />
-          </Div2>
-        );
-      })}
-    </SelectorDiv>
-  );
-};
+const ColorSelector = ({ selectedColor, selectColor }) => (
+  <SelectorDiv>
+    {colors.map((e, idx) => (
+      <ColorContainer>
+        <ColorDiv
+          key={idx}
+          style={{
+            backgroundColor: e,
+            border:
+              selectedColor === e ? 'solid black 2.5px ' : 'solid black 1px ',
+          }}
+          onClick={() => selectColor(e)}
+        />
+      </ColorContainer>
+    ))}
+  </SelectorDiv>
+);
 
 let mapStateToProps = ({ svgcanvas }) => ({
   selectedColor: svgcanvas.selectedColor,
