@@ -6,10 +6,12 @@ const SELECT_SIZE = 'svgcanvas/SELECT_SIZE';
 const ADD_SHAPE = 'svgcanvas/ADD_SHAPE';
 const UNDO = 'svgcanvas/UNDO';
 const REDO = 'svgcanvas/REDO';
+const REMOVE = 'svgcanvas/REMOVE';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
 export const selectSize = createAction(SELECT_SIZE);
+export const remove = createAction(REMOVE);
 export const addShape = createAction(ADD_SHAPE);
 export const undo = createAction(UNDO);
 export const redo = createAction(REDO);
@@ -83,6 +85,16 @@ const svgcanvas = handleActions(
           ...state.obj[state.currentStep],
           action.payload,
         ],
+      },
+    }),
+    [REMOVE]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep + 1,
+      obj: {
+        ...state.obj,
+        [state.currentStep + 1]: state.obj[state.currentStep].filter(
+          e => action.payload !== e.key,
+        ),
       },
     }),
     [UNDO]: (state, action) => ({

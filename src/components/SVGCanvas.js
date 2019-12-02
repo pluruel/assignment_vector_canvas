@@ -2,16 +2,17 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SVGCanvas.scss';
 import { createLine, createRect, createTempRect } from '../lib/models';
-import { stringify } from 'svgson';
+import { parse, stringify } from 'svgson';
 import Parser from 'html-react-parser';
 
-import { addShape } from '../modules/svgcanvas';
+import { addShape, remove } from '../modules/svgcanvas';
 
 class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
   ref = React.createRef();
   state = {
     crntShape: null,
+    erasorMouseDown: false,
     // 첫 클릭 시 선택값
     sx: null,
     sy: null,
@@ -25,7 +26,7 @@ class SVGCanvas extends Component {
 
   handleMouseDown(e) {
     const { crntShape } = this.state;
-
+    this.setState({ erasorMouseDown: true });
     const { x: x1, y: y1 } = this.getAbspos(e);
     if (crntShape) {
       this.props.addShape(this.state.crntShape);
@@ -102,16 +103,35 @@ class SVGCanvas extends Component {
     }
   }
 
+  onClick(e) {
+    return this.props.selectedTool === 'eraser' && this.state.erasorMouseDown
+      ? this.props.remove(e.key)
+      : null;
+  }
+
+  handleMouseUp() {
+    this.setState({ erasorMouseDown: false });
+  }
+
   render() {
     return (
       <svg
         className="Svg"
         onMouseDown={this.handleMouseDown.bind(this)}
+        onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
         // 여기서 Svg의 영역을 잡아준다.
         ref={this.ref}
       >
-        {this.props.objs[this.props.currentStep].map(e => Parser(stringify(e)))}
+        {this.props.objs[this.props.currentStep].map((e, idx) => {
+          e['key'] = idx;
+          // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
+          return (
+            <g key={idx} onMouseOver={() => this.onClick(e)}>
+              {Parser(stringify(e))}
+            </g>
+          );
+        })}
         {this.state.crntShape !== null
           ? Parser(stringify(this.state.crntShape))
           : null}
@@ -129,6 +149,7 @@ let mapStateToProps = ({ svgcanvas }) => ({
 });
 const mapFunction = {
   addShape,
+  remove,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGCanvas);
