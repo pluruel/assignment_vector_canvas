@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SVGCanvas.scss';
-import { getLine } from '../lib/models';
-import { parse, stringify } from 'svgson';
+import { createLine, createRect, createTempRect } from '../lib/models';
+import { stringify } from 'svgson';
 import Parser from 'html-react-parser';
 
 import { addShape } from '../modules/svgcanvas';
@@ -12,6 +12,9 @@ class SVGCanvas extends Component {
   ref = React.createRef();
   state = {
     crntShape: null,
+    // 첫 클릭 시 선택값
+    sx: null,
+    sy: null,
   };
   // svg내의 위치 잡기
   getAbspos({ clientX, clientY }) {
@@ -22,40 +25,36 @@ class SVGCanvas extends Component {
 
   handleMouseDown(e) {
     const { crntShape } = this.state;
-    const { shiftKey } = e;
+
     const { x: x1, y: y1 } = this.getAbspos(e);
     if (crntShape) {
       this.props.addShape(this.state.crntShape);
       this.setState(() => ({ crntShape: null }));
     } else {
+      this.setState({ sx: x1, sy: y1 });
+
       this.setState(s => {
-        const obj = {
-          name: 'line',
-          type: 'element',
-          value: '',
-          attributes: {
-            stroke: this.props.selectedColor,
-            'stroke-width': this.props.selectedSize,
-            x1: x1,
-            y1: y1,
-            x2: x1,
-            y2: y1,
-          },
-          children: [],
-        };
+        let obj = null;
 
-        // const obj = {
-        //   id: Date.now(),
-        //   type: this.props.selectedTool,
-        //   stroke: this.props.selectedColor,
-        //   width: this.props.selectedSize,
-        //   x1: x1,
-        //   y1: y1,
-        //   x2: x1,
-        //   y2: y1,
-        //   locked: shiftKey,
-        // };
-
+        switch (this.props.selectedTool) {
+          case 'line':
+            obj = createLine({
+              x1: x1,
+              y1: y1,
+              stroke: this.props.selectedColor,
+              strokeWidth: this.props.selectedSize,
+            });
+            break;
+          case 'rect':
+            obj = createRect({
+              x: x1,
+              y: y1,
+              fill: this.props.selectedColor,
+            });
+            break;
+          default:
+            obj = null;
+        }
         return {
           ...s,
           crntShape: obj,
@@ -66,20 +65,40 @@ class SVGCanvas extends Component {
 
   handleMouseMove(e) {
     const { crntShape } = this.state;
+    const { x: x2, y: y2 } = this.getAbspos(e);
     if (crntShape) {
-      const { x: x2, y: y2 } = this.getAbspos(e);
-      const obj = {
-        x2,
-        y2,
-      };
-      this.setState(s => {
-        return {
-          crntShape: {
-            ...s.crntShape,
-            attributes: { ...s.crntShape.attributes, ...obj },
-          },
-        };
-      });
+      switch (this.props.selectedTool) {
+        case 'line': {
+          const obj = {
+            x2,
+            y2,
+          };
+          this.setState(s => ({
+            crntShape: {
+              ...s.crntShape,
+              attributes: { ...s.crntShape.attributes, ...obj },
+            },
+          }));
+          break;
+        }
+        case 'rect': {
+          const obj = createTempRect({
+            x1: this.state.sx,
+            y1: this.state.sy,
+            x2,
+            y2,
+          });
+          this.setState(s => ({
+            crntShape: {
+              ...s.crntShape,
+              attributes: { ...s.crntShape.attributes, ...obj },
+            },
+          }));
+          break;
+        }
+        default:
+          break;
+      }
     }
   }
 

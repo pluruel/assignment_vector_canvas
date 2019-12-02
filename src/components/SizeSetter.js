@@ -10,7 +10,7 @@ const SizeSetter = ({ selectedSize, selectSize }) => {
       <input
         type="range"
         min="1"
-        max="1000"
+        max="50"
         step="1"
         value={selectedSize}
         onChange={selectSize}

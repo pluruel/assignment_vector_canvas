@@ -1,5 +1,4 @@
 import { handleActions, createAction } from 'redux-actions';
-import produce from 'immer';
 
 const SELECT_COLOR = 'svgcanvas/SELECT_COLOR';
 const SELECT_TOOL = 'svgcanvas/SELECT_TOOL';
@@ -17,7 +16,7 @@ export const redo = createAction(REDO);
 
 const initialState = {
   selectedColor: '#000000',
-  selectedTool: 'R',
+  selectedTool: 'line',
   selectedSize: '5',
   svgdefault: {
     name: 'svg',
