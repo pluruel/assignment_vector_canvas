@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import './SVGCanvas.scss';
-import { createLine, createRect, createTempRect } from '../lib/models';
+import {
+  createLine,
+  createRect,
+  createTempRect,
+  createEllipse,
+  createTempEllipse,
+} from '../lib/models';
 import { parse, stringify } from 'svgson';
 import Parser from 'html-react-parser';
 
@@ -28,6 +34,7 @@ class SVGCanvas extends Component {
     const { crntShape } = this.state;
     this.setState({ erasorMouseDown: true });
     const { x: x1, y: y1 } = this.getAbspos(e);
+
     if (crntShape) {
       this.props.addShape(this.state.crntShape);
       this.setState(() => ({ crntShape: null }));
@@ -48,6 +55,13 @@ class SVGCanvas extends Component {
             break;
           case 'rect':
             obj = createRect({
+              x: x1,
+              y: y1,
+              fill: this.props.selectedColor,
+            });
+            break;
+          case 'ellipse':
+            obj = createEllipse({
               x: x1,
               y: y1,
               fill: this.props.selectedColor,
@@ -89,6 +103,22 @@ class SVGCanvas extends Component {
             x2,
             y2,
           });
+          this.setState(s => ({
+            crntShape: {
+              ...s.crntShape,
+              attributes: { ...s.crntShape.attributes, ...obj },
+            },
+          }));
+          break;
+        }
+        case 'ellipse': {
+          const obj = createTempEllipse({
+            x1: this.state.sx,
+            y1: this.state.sy,
+            x2,
+            y2,
+          });
+
           this.setState(s => ({
             crntShape: {
               ...s.crntShape,

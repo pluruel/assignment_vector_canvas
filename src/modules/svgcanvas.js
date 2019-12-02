@@ -31,16 +31,15 @@ const initialState = {
   obj: [
     [
       {
-        name: 'line',
+        name: 'ellipse',
         type: 'element',
         value: '',
         attributes: {
-          stroke: '#000000',
-          'stroke-width': '1',
-          x1: '100',
-          y1: '80',
-          x2: '250',
-          y2: '150',
+          fill: '000000',
+          rx: '100',
+          ry: '80',
+          cx: '150',
+          cy: '120',
         },
         children: [],
       },

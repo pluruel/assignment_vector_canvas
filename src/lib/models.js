@@ -58,3 +58,45 @@ export const createTempRect = ({ x1, y1, x2, y2 }) => {
 
   return temp;
 };
+export const createEllipse = ({ x, y, fill }) => {
+  const obj = {
+    name: 'ellipse',
+    type: 'element',
+    value: '',
+    attributes: {
+      cx: x,
+      cy: y,
+      fill: fill,
+    },
+    children: [],
+  };
+
+  return obj;
+};
+
+export const createTempEllipse = ({ x1, y1, x2, y2 }) => {
+  let cx, cy, rx, ry;
+
+  if (x2 < x1) {
+    cx = (x1 + x2) / 2;
+    rx = (x1 - x2) / 2;
+  } else {
+    cx = (x2 + x1) / 2;
+    rx = (x2 - x1) / 2;
+  }
+  if (y2 < y1) {
+    cy = (y1 + y2) / 2;
+    ry = (y1 - y2) / 2;
+  } else {
+    cy = (y2 + y1) / 2;
+    ry = (y2 - y1) / 2;
+  }
+  const temp = {};
+
+  temp['rx'] = rx;
+  temp['ry'] = ry;
+  temp['cx'] = cx;
+  temp['cy'] = cy;
+
+  return temp;
+};
