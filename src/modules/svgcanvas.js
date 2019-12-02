@@ -28,37 +28,7 @@ const initialState = {
     children: [],
   },
   currentStep: 0,
-  obj: [
-    [
-      {
-        name: 'ellipse',
-        type: 'element',
-        value: '',
-        attributes: {
-          fill: '000000',
-          rx: '100',
-          ry: '80',
-          cx: '150',
-          cy: '120',
-        },
-        children: [],
-      },
-      {
-        name: 'line',
-        type: 'element',
-        value: '',
-        attributes: {
-          stroke: '#000000',
-          'stroke-width': '1',
-          x1: '70',
-          y1: '80',
-          x2: '250',
-          y2: '150',
-        },
-        children: [],
-      },
-    ],
-  ],
+  obj: [[]],
 };
 
 const svgcanvas = handleActions(

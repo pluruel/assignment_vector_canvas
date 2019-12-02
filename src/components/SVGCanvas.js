@@ -118,7 +118,6 @@ class SVGCanvas extends Component {
             x2,
             y2,
           });
-
           this.setState(s => ({
             crntShape: {
               ...s.crntShape,
