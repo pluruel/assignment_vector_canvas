@@ -9,15 +9,16 @@ const download = (svg, obj) => {
   var text = stringify(svg);
   var data = new Blob([text], { type: 'image/svg+xml' });
   var url = window.URL.createObjectURL(data);
-  const link = document.createElement('a');
 
+  const link = document.createElement('a');
   link.href = url;
   link.setAttribute('download', 'newSvg.svg');
+
   document.body.appendChild(link);
   link.click();
 };
 
-const SVGExport = ({ svg, obj, imports }) => (
+const SVGExport = ({ svg, obj }) => (
   <button onClick={() => download(svg, obj)}>Export</button>
 );
 
