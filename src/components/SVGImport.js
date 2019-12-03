@@ -1,8 +1,8 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
-import { selectTool, imports } from '../modules/svgcanvas';
-import { parse, stringify } from 'svgson';
+import { imports } from '../modules/svgcanvas';
+import { parse } from 'svgson';
 import { parseViewBox } from '../lib/functions';
 
 const uploadFile = (event, objidx, imports) => {
@@ -33,7 +33,7 @@ const uploadFile = (event, objidx, imports) => {
   fr.readAsText(file);
 };
 
-const SVGImport = ({ selectedTool, selectTool, objidx, imports }) => (
+const SVGImport = ({ objidx, imports }) => (
   <input type="file" onChange={e => uploadFile(e, objidx, imports)} />
 );
 
@@ -43,7 +43,6 @@ let mapStateToProps = ({ svgcanvas }) => ({
 });
 
 const mapFunction = {
-  selectTool,
   imports,
 };
 
