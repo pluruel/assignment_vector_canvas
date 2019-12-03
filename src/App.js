@@ -5,11 +5,13 @@ import ColorSelector from './containers/ColorSelector';
 import styled from 'styled-components';
 import ToolSelector from './containers/ToolSelector';
 import Header from './containers/Header';
-import SVGImport from './containers/SVGImport';
+
 import { MdUndo, MdRedo } from 'react-icons/md';
 import SizeSetter from './components/SizeSetter';
 import { undo, redo } from './modules/svgcanvas';
 import { connect } from 'react-redux';
+import SVGImport from './components/SVGImport';
+import SVGExport from './components/SVGExport';
 
 const MainDiv = styled.div`
   display: flex;
@@ -39,6 +41,7 @@ function App({ undo, redo }) {
       <LowerPart>
         <div style={{ marginLeft: 'auto' }} />
         <SVGImport />
+        <SVGExport />
       </LowerPart>
     </div>
   );

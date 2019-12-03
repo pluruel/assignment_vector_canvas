@@ -9,6 +9,7 @@ const uploadFile = (event, objidx, imports) => {
   let file = event.target.files[0];
   const fr = new FileReader();
   let cnt = objidx;
+
   fr.onload = () => {
     parse(fr.result).then(e => {
       if (e.attributes.viewBox) {
