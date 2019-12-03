@@ -36,6 +36,7 @@ class SVGCanvas extends Component {
     const { x: x1, y: y1 } = this.getAbspos(e);
 
     if (crntShape) {
+      this.state.crntShape['id'] = this.props.objidx;
       this.props.addShape(this.state.crntShape);
       this.setState(() => ({ crntShape: null }));
     } else {
@@ -133,8 +134,9 @@ class SVGCanvas extends Component {
   }
 
   onClick(e) {
+    console.log(e.id);
     return this.props.selectedTool === 'eraser' && this.state.erasorMouseDown
-      ? this.props.remove(e.key)
+      ? this.props.remove(e.id)
       : null;
   }
 
@@ -153,10 +155,9 @@ class SVGCanvas extends Component {
         ref={this.ref}
       >
         {this.props.objs[this.props.currentStep].map((e, idx) => {
-          e['key'] = idx;
           // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
           return (
-            <g key={idx} onMouseOver={() => this.onClick(e)}>
+            <g key={e.id} onMouseOver={() => this.onClick(e)}>
               {Parser(stringify(e))}
             </g>
           );
@@ -175,6 +176,7 @@ let mapStateToProps = ({ svgcanvas }) => ({
   selectedColor: svgcanvas.selectedColor,
   selectedTool: svgcanvas.selectedTool,
   selectedSize: svgcanvas.selectedSize,
+  objidx: svgcanvas.objidx,
 });
 const mapFunction = {
   addShape,

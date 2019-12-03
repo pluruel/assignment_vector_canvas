@@ -33,6 +33,7 @@ const initialState = {
     attributes: {},
     children: [],
   },
+  objidx: 0,
   currentStep: 0,
   obj: [[]],
 };
@@ -61,6 +62,7 @@ const svgcanvas = handleActions(
           action.payload,
         ],
       },
+      objidx: state.objidx + 1,
     }),
     [REMOVE]: (state, action) => ({
       ...state,
@@ -68,7 +70,7 @@ const svgcanvas = handleActions(
       obj: {
         ...state.obj,
         [state.currentStep + 1]: state.obj[state.currentStep].filter(
-          e => action.payload !== e.key,
+          e => action.payload !== e.id,
         ),
       },
     }),
@@ -87,8 +89,9 @@ const svgcanvas = handleActions(
       ...state,
       obj: {
         ...state.obj,
-        [state.currentStep]: action.payload,
+        [state.currentStep]: action.payload.objs,
       },
+      objidx: action.payload.objidx,
     }),
   },
   initialState,
