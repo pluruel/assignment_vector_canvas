@@ -3,20 +3,30 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { selectTool, imports } from '../modules/svgcanvas';
 import { parse, stringify } from 'svgson';
+import { parseViewBox } from '../lib/functions';
+
 const uploadFile = (event, objidx, imports) => {
   let file = event.target.files[0];
   const fr = new FileReader();
   let cnt = objidx;
   fr.onload = () => {
-    parse(fr.result).then(e =>
+    parse(fr.result).then(e => {
+      if (e.attributes.viewBox) {
+        const [x, y, width, height] = parseViewBox(e.attributes.viewBox, true);
+        e.attributes['x'] = x;
+        e.attributes['y'] = y;
+        e.attributes['width'] = width;
+        e.attributes['height'] = height;
+      }
       imports({
+        svg: e,
         objs: e.children.map(c => ({
           ...c,
           id: cnt++,
         })),
         objidx: cnt,
-      }),
-    );
+      });
+    });
   };
 
   fr.readAsText(file);

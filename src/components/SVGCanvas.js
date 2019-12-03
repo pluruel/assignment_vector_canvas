@@ -145,6 +145,8 @@ class SVGCanvas extends Component {
   }
 
   render() {
+    const svgattr = this.props.svg.attributes;
+
     return (
       <svg
         className="Svg"
@@ -153,18 +155,30 @@ class SVGCanvas extends Component {
         onMouseMove={this.handleMouseMove.bind(this)}
         // 여기서 Svg의 영역을 잡아준다.
         ref={this.ref}
+        style={{ backgroundColor: '#dddddd' }}
       >
-        {this.props.objs[this.props.currentStep].map((e, idx) => {
-          // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
-          return (
-            <g key={e.id} onMouseOver={() => this.onClick(e)}>
-              {Parser(stringify(e))}
-            </g>
-          );
-        })}
-        {this.state.crntShape !== null
-          ? Parser(stringify(this.state.crntShape))
-          : null}
+        <svg
+          version="1.0"
+          xmlns="http://www.w3.org/2000/svg"
+          x={svgattr.x}
+          y={svgattr.y}
+          width={svgattr.width}
+          height={svgattr.height}
+          viewBox={svgattr.viewBox}
+        >
+          <rect width="100%" height="100%" fill="white" />
+          {this.props.objs[this.props.currentStep].map((e, idx) => {
+            // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
+            return (
+              <g key={e.id} onMouseOver={() => this.onClick(e)}>
+                {Parser(stringify(e))}
+              </g>
+            );
+          })}
+          {this.state.crntShape !== null
+            ? Parser(stringify(this.state.crntShape))
+            : null}
+        </svg>
       </svg>
     );
   }
@@ -177,6 +191,7 @@ let mapStateToProps = ({ svgcanvas }) => ({
   selectedTool: svgcanvas.selectedTool,
   selectedSize: svgcanvas.selectedSize,
   objidx: svgcanvas.objidx,
+  svg: svgcanvas.svg,
 });
 const mapFunction = {
   addShape,

@@ -26,14 +26,21 @@ const initialState = {
   selectedColor: '#000000',
   selectedTool: 'line',
   selectedSize: '5',
-  svgdefault: {
+  objidx: 0,
+  svg: {
     name: 'svg',
     type: 'element',
     value: '',
-    attributes: {},
+    attributes: {
+      xmlns: 'http://www.w3.org/2000/svg',
+      x: 0,
+      y: 0,
+      width: 640,
+      height: 480,
+      viewBox: '0 0 640 480',
+    },
     children: [],
   },
-  objidx: 0,
   currentStep: 0,
   obj: [[]],
 };
@@ -91,6 +98,7 @@ const svgcanvas = handleActions(
         ...state.obj,
         [state.currentStep]: action.payload.objs,
       },
+      svg: action.payload.svg,
       objidx: action.payload.objidx,
     }),
   },
