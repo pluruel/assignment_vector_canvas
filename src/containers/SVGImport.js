@@ -5,12 +5,12 @@ import { selectTool, imports } from '../modules/svgcanvas';
 import { parse, stringify } from 'svgson';
 const uploadFile = (event, imports) => {
   let file = event.target.files[0];
-
   const fr = new FileReader();
-
   fr.onload = () => {
     parse(fr.result).then(e => imports(e.children));
   };
+
+  fr.readAsText(file);
 };
 
 const SVGImport = ({ selectedTool, selectTool, imports }) => (
