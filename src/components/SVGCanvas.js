@@ -9,7 +9,6 @@ import {
   createTempEllipse,
 } from '../lib/models';
 import { parse, stringify } from 'svgson';
-import Parser from 'html-react-parser';
 
 import { addShape, remove } from '../modules/svgcanvas';
 
@@ -134,7 +133,6 @@ class SVGCanvas extends Component {
   }
 
   onClick(e) {
-    console.log(e.id);
     return this.props.selectedTool === 'eraser' && this.state.erasorMouseDown
       ? this.props.remove(e.id)
       : null;
@@ -149,7 +147,7 @@ class SVGCanvas extends Component {
 
     return (
       <svg
-        className="Svg"
+        className="Canvas"
         onMouseDown={this.handleMouseDown.bind(this)}
         onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
@@ -167,17 +165,25 @@ class SVGCanvas extends Component {
           viewBox={svgattr.viewBox}
         >
           <rect width="100%" height="100%" fill="white" />
+
           {this.props.objs[this.props.currentStep].map((e, idx) => {
             // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
             return (
-              <g key={e.id} onMouseOver={() => this.onClick(e)}>
-                {Parser(stringify(e))}
-              </g>
+              <g
+                key={e.id}
+                onMouseOver={() => this.onClick(e)}
+                dangerouslySetInnerHTML={{ __html: stringify(e) }}
+              />
             );
           })}
-          {this.state.crntShape !== null
-            ? Parser(stringify(this.state.crntShape))
-            : null}
+          {this.state.crntShape !== null ? (
+            <g
+              // onMouseOver={() => this.onClick(this.state.crntShape)}
+              dangerouslySetInnerHTML={{
+                __html: stringify(this.state.crntShape),
+              }}
+            />
+          ) : null}
         </svg>
       </svg>
     );

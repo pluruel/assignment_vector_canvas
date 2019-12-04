@@ -23,26 +23,43 @@ const LowerPart = styled.div`
   display: flex;
 `;
 
+const ParentDiv = styled.div`
+  background-color: white;
+  border-radius: 2px;
+  bottom: 0;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 1.125);
+  height: 600px;
+  left: 0;
+  margin: auto;
+  padding: 1rem;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 720px;
+`;
+
 function App({ undo, redo }) {
   return (
     <div className="App">
-      <Header />
-      <UpperPart>
-        <div style={{ marginLeft: 'auto' }} />
-        <SizeSetter />
-        <MdUndo onClick={() => undo()} />
-        <MdRedo onClick={() => redo()} />
-      </UpperPart>
-      <MainDiv>
-        <ToolSelector />
-        <ColorSelector />
-        <SVGCanvas />
-      </MainDiv>
-      <LowerPart>
-        <div style={{ marginLeft: 'auto' }} />
-        <SVGImport />
-        <SVGExport />
-      </LowerPart>
+      <ParentDiv>
+        <Header />
+        <UpperPart>
+          <div style={{ marginLeft: 'auto' }} />
+          <SizeSetter />
+          <MdUndo onClick={() => undo()} />
+          <MdRedo onClick={() => redo()} />
+        </UpperPart>
+        <MainDiv>
+          <ToolSelector />
+          <ColorSelector />
+          <SVGCanvas />
+        </MainDiv>
+        <LowerPart>
+          <div style={{ marginLeft: 'auto' }} />
+          <SVGImport />
+          <SVGExport />
+        </LowerPart>
+      </ParentDiv>
     </div>
   );
 }
