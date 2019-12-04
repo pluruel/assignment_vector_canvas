@@ -9,6 +9,8 @@ import {
   createTempEllipse,
   createCircle,
   createTempCircle,
+  createPolygon,
+  createTempPolygon,
 } from '../lib/models';
 import { parse, stringify } from 'svgson';
 
@@ -31,59 +33,89 @@ class SVGCanvas extends Component {
     return { x: clientX - left, y: clientY - top };
   }
 
+  saveCrntShape() {
+    this.state.crntShape['id'] = this.props.objidx;
+    this.props.addShape(this.state.crntShape);
+    this.state.crntShape = null;
+  }
+
   handleMouseDown(e) {
     const { crntShape } = this.state;
     this.setState({ erasorMouseDown: true });
     const { x: x1, y: y1 } = this.getAbspos(e);
 
     if (crntShape) {
+      if (this.props.selectedTool === 'polygon') {
+        this.setState(s => ({
+          crntShape: {
+            ...s.crntShape,
+            attributes: {
+              ...s.crntShape.attributes,
+              points: s.crntShape.attributes.points.concat(` ${x1} ${y1}`),
+            },
+          },
+        }));
+        return;
+      }
+
       this.state.crntShape['id'] = this.props.objidx;
-      this.props.addShape(this.state.crntShape);
-      this.setState(() => ({ crntShape: null }));
+
+      this.saveCrntShape();
     } else {
       this.setState({ sx: x1, sy: y1 });
+      let obj = null;
 
-      this.setState(s => {
-        let obj = null;
+      switch (this.props.selectedTool) {
+        case 'line':
+          obj = createLine({
+            x1: x1,
+            y1: y1,
+            stroke: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
+          });
+          break;
+        case 'rect':
+          obj = createRect({
+            x: x1,
+            y: y1,
+            fill: this.props.selectedColor,
+          });
+          break;
+        case 'ellipse':
+          obj = createEllipse({
+            x: x1,
+            y: y1,
+            fill: this.props.selectedColor,
+          });
+          break;
+        case 'circle':
+          obj = createCircle({
+            x: x1,
+            y: y1,
+            fill: this.props.selectedColor,
+          });
+          break;
+        case 'polygon':
+          obj = createPolygon({
+            x: x1,
+            y: y1,
+            fill: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
+          });
+          break;
+        default:
+          obj = null;
+      }
+      this.setState(s => ({
+        ...s,
+        crntShape: obj,
+      }));
+    }
+  }
 
-        switch (this.props.selectedTool) {
-          case 'line':
-            obj = createLine({
-              x1: x1,
-              y1: y1,
-              stroke: this.props.selectedColor,
-              strokeWidth: this.props.selectedSize,
-            });
-            break;
-          case 'rect':
-            obj = createRect({
-              x: x1,
-              y: y1,
-              fill: this.props.selectedColor,
-            });
-            break;
-          case 'ellipse':
-            obj = createEllipse({
-              x: x1,
-              y: y1,
-              fill: this.props.selectedColor,
-            });
-            break;
-          case 'circle':
-            obj = createCircle({
-              x: x1,
-              y: y1,
-              fill: this.props.selectedColor,
-            });
-            break;
-          default:
-            obj = null;
-        }
-        return {
-          ...s,
-          crntShape: obj,
-        };
-      });
+  handleMouseRightClick() {
+    if (this.props.selectedTool === 'polygon' && this.state.crntShape) {
+      this.saveCrntShape();
     }
   }
 
@@ -150,6 +182,7 @@ class SVGCanvas extends Component {
           }));
           break;
         }
+
         default:
           break;
       }
@@ -175,6 +208,7 @@ class SVGCanvas extends Component {
         onMouseDown={this.handleMouseDown.bind(this)}
         onMouseUp={this.handleMouseUp.bind(this)}
         onMouseMove={this.handleMouseMove.bind(this)}
+        onContextMenu={this.handleMouseRightClick.bind(this)}
         // 여기서 Svg의 영역을 잡아준다.
         ref={this.ref}
         style={{ backgroundColor: '#dddddd' }}

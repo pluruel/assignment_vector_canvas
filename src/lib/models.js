@@ -126,3 +126,20 @@ export const createTempCircle = ({ x1, y1, x2, y2 }) => {
 
   return temp;
 };
+
+export const createPolygon = ({ x, y, fill, strokeWidth }) => {
+  const obj = {
+    name: 'polygon',
+    type: 'element',
+    value: '',
+    attributes: {
+      points: `${x} ${y}`,
+      stroke: fill,
+      'stroke-width': strokeWidth,
+      fill: 'none',
+    },
+    children: [],
+  };
+
+  return obj;
+};
