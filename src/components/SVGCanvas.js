@@ -7,6 +7,8 @@ import {
   createTempRect,
   createEllipse,
   createTempEllipse,
+  createCircle,
+  createTempCircle,
 } from '../lib/models';
 import { parse, stringify } from 'svgson';
 
@@ -67,6 +69,13 @@ class SVGCanvas extends Component {
               fill: this.props.selectedColor,
             });
             break;
+          case 'circle':
+            obj = createCircle({
+              x: x1,
+              y: y1,
+              fill: this.props.selectedColor,
+            });
+            break;
           default:
             obj = null;
         }
@@ -113,6 +122,21 @@ class SVGCanvas extends Component {
         }
         case 'ellipse': {
           const obj = createTempEllipse({
+            x1: this.state.sx,
+            y1: this.state.sy,
+            x2,
+            y2,
+          });
+          this.setState(s => ({
+            crntShape: {
+              ...s.crntShape,
+              attributes: { ...s.crntShape.attributes, ...obj },
+            },
+          }));
+          break;
+        }
+        case 'circle': {
+          const obj = createTempCircle({
             x1: this.state.sx,
             y1: this.state.sy,
             x2,

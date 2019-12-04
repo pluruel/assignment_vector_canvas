@@ -100,3 +100,29 @@ export const createTempEllipse = ({ x1, y1, x2, y2 }) => {
 
   return temp;
 };
+
+export const createCircle = ({ x, y, fill }) => {
+  const obj = {
+    name: 'circle',
+    type: 'element',
+    value: '',
+    attributes: {
+      cx: x,
+      cy: y,
+      fill: fill,
+    },
+    children: [],
+  };
+
+  return obj;
+};
+
+export const createTempCircle = ({ x1, y1, x2, y2 }) => {
+  const r = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+  const temp = {};
+  temp['r'] = r;
+  temp['cx'] = x1;
+  temp['cy'] = y1;
+
+  return temp;
+};
