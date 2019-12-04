@@ -17,15 +17,17 @@ export const createLine = ({ x1, y1, stroke, strokeWidth }) => {
   return obj;
 };
 
-export const createRect = ({ x, y, fill }) => {
+export const createRect = ({ x, y, stroke, strokeWidth }) => {
   const obj = {
     name: 'rect',
     type: 'element',
     value: '',
     attributes: {
+      stroke: stroke,
+      'stroke-width': strokeWidth,
       x: x,
       y: y,
-      fill: fill,
+      fill: 'none',
     },
     children: [],
   };
@@ -58,7 +60,7 @@ export const createTempRect = ({ x1, y1, x2, y2 }) => {
 
   return temp;
 };
-export const createEllipse = ({ x, y, fill }) => {
+export const createEllipse = ({ x, y, stroke, strokeWidth }) => {
   const obj = {
     name: 'ellipse',
     type: 'element',
@@ -66,7 +68,9 @@ export const createEllipse = ({ x, y, fill }) => {
     attributes: {
       cx: x,
       cy: y,
-      fill: fill,
+      stroke: stroke,
+      'stroke-width': strokeWidth,
+      fill: 'none',
     },
     children: [],
   };
@@ -101,7 +105,9 @@ export const createTempEllipse = ({ x1, y1, x2, y2 }) => {
   return temp;
 };
 
-export const createCircle = ({ x, y, fill }) => {
+export const createCircle = ({ x, y, stroke, strokeWidth }) => {
+  console.log(stroke);
+  console.log(strokeWidth);
   const obj = {
     name: 'circle',
     type: 'element',
@@ -109,7 +115,9 @@ export const createCircle = ({ x, y, fill }) => {
     attributes: {
       cx: x,
       cy: y,
-      fill: fill,
+      stroke: stroke,
+      'stroke-width': strokeWidth,
+      fill: 'none',
     },
     children: [],
   };

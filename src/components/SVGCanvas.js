@@ -78,21 +78,24 @@ class SVGCanvas extends Component {
           obj = createRect({
             x: x1,
             y: y1,
-            fill: this.props.selectedColor,
+            stroke: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
           });
           break;
         case 'ellipse':
           obj = createEllipse({
             x: x1,
             y: y1,
-            fill: this.props.selectedColor,
+            stroke: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
           });
           break;
         case 'circle':
           obj = createCircle({
             x: x1,
             y: y1,
-            fill: this.props.selectedColor,
+            stroke: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
           });
           break;
         case 'polygon':
