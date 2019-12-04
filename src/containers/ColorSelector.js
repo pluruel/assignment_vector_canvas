@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { selectColor } from '../modules/svgcanvas';
+import { selectColor, openColourSelector } from '../modules/svgcanvas';
+import { PhotoshopPicker } from 'react-color';
+import ColourPicker from './ColourPicker';
 const colors = ['#0000ff', '#ff0000', '#00ff00', '#000000', '#ffffff'];
 
 const ColorDiv = styled.div`
@@ -25,30 +27,53 @@ const SelectorDiv = styled.div`
   margin-top: 4px;
 `;
 
-const ColorSelector = ({ selectedColor, selectColor }) => (
-  <SelectorDiv>
-    {colors.map(e => (
-      <ColorContainer key={e}>
+const ColorSelector = ({
+  selectedColor,
+  pickerOpened,
+  selectColor,
+  openColourSelector,
+}) => {
+  return (
+    <SelectorDiv>
+      {colors.map(e => (
+        <ColorContainer key={e}>
+          <ColorDiv
+            key={e}
+            style={{
+              backgroundColor: e,
+              border:
+                selectedColor === e ? 'solid black 2.5px ' : 'solid black 1px ',
+            }}
+            onClick={() => selectColor(e)}
+          />
+        </ColorContainer>
+      ))}
+      <ColorContainer key="selector">
         <ColorDiv
-          key={e}
+          key={'selector'}
           style={{
-            backgroundColor: e,
+            backgroundColor: selectedColor,
             border:
-              selectedColor === e ? 'solid black 2.5px ' : 'solid black 1px ',
+              selectedColor === 'selector'
+                ? 'solid black 2.5px '
+                : 'solid black 1px ',
           }}
-          onClick={() => selectColor(e)}
+          onClick={() => openColourSelector()}
         />
       </ColorContainer>
-    ))}
-  </SelectorDiv>
-);
+      {pickerOpened ? <ColourPicker /> : null}
+    </SelectorDiv>
+  );
+};
 
 let mapStateToProps = ({ svgcanvas }) => ({
   selectedColor: svgcanvas.selectedColor,
+  pickerOpened: svgcanvas.pickerOpened,
 });
 
 const mapFunction = {
   selectColor,
+  openColourSelector,
 };
 
 export default connect(mapStateToProps, mapFunction)(ColorSelector);

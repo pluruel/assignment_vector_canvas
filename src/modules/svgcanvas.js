@@ -10,6 +10,7 @@ const REMOVE = 'svgcanvas/REMOVE';
 const IMPORTS = 'svgcanvas/IMPORTS';
 const EXPORTS = 'svgcanvas/EXPORTS';
 const INITIALSTATE = 'svgcanvas/INITIALSTATE';
+const OPEN_COLOUR_SELECTOR = 'svgcanvas/OPEN_COLOUR_SELECTOR';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
@@ -21,6 +22,7 @@ export const redo = createAction(REDO);
 export const imports = createAction(IMPORTS);
 export const exports = createAction(EXPORTS);
 export const initialstate = createAction(INITIALSTATE);
+export const openColourSelector = createAction(OPEN_COLOUR_SELECTOR);
 
 const initialState = {
   selectedColor: '#000000',
@@ -43,6 +45,7 @@ const initialState = {
   },
   currentStep: 0,
   obj: [[]],
+  pickerOpened: false,
 };
 
 const svgcanvas = handleActions(
@@ -100,6 +103,10 @@ const svgcanvas = handleActions(
       },
       svg: action.payload.svg,
       objidx: action.payload.objidx,
+    }),
+    [OPEN_COLOUR_SELECTOR]: (state, action) => ({
+      ...state,
+      pickerOpened: !state.pickerOpened,
     }),
   },
   initialState,
