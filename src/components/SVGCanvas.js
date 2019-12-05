@@ -10,9 +10,8 @@ import {
   createCircle,
   createTempCircle,
   createPolygon,
-  createTempPolygon,
 } from '../lib/models';
-import { parse, stringify } from 'svgson';
+import { stringify } from 'svgson';
 
 import { addShape, remove } from '../modules/svgcanvas';
 
@@ -29,14 +28,14 @@ class SVGCanvas extends Component {
   // svg내의 위치 잡기
   getAbspos({ clientX, clientY }) {
     const { top, left } = this.ref.current.getBoundingClientRect();
-
     return { x: clientX - left, y: clientY - top };
   }
 
+  // 저장 로직
+  // setState는 비동기이기 때문에 현재 저장된 폼을 스프레드 식으로 뿌리고 id만 추가하여 Shape 에 추가
   saveCrntShape() {
-    this.state.crntShape['id'] = this.props.objidx;
-    this.props.addShape(this.state.crntShape);
-    this.state.crntShape = null;
+    this.props.addShape({ ...this.state.crntShape, id: this.props.objidx });
+    this.setState({ crntShape: null });
   }
 
   handleMouseDown(e) {
@@ -57,8 +56,6 @@ class SVGCanvas extends Component {
         }));
         return;
       }
-
-      this.state.crntShape['id'] = this.props.objidx;
 
       this.saveCrntShape();
     } else {
@@ -109,6 +106,7 @@ class SVGCanvas extends Component {
         default:
           obj = null;
       }
+
       this.setState(s => ({
         ...s,
         crntShape: obj,
@@ -126,68 +124,52 @@ class SVGCanvas extends Component {
     const { crntShape } = this.state;
     const { x: x2, y: y2 } = this.getAbspos(e);
     if (crntShape) {
+      let obj = null;
       switch (this.props.selectedTool) {
         case 'line': {
-          const obj = {
+          obj = {
             x2,
             y2,
           };
-          this.setState(s => ({
-            crntShape: {
-              ...s.crntShape,
-              attributes: { ...s.crntShape.attributes, ...obj },
-            },
-          }));
           break;
         }
         case 'rect': {
-          const obj = createTempRect({
+          obj = createTempRect({
             x1: this.state.sx,
             y1: this.state.sy,
             x2,
             y2,
           });
-          this.setState(s => ({
-            crntShape: {
-              ...s.crntShape,
-              attributes: { ...s.crntShape.attributes, ...obj },
-            },
-          }));
           break;
         }
         case 'ellipse': {
-          const obj = createTempEllipse({
+          obj = createTempEllipse({
             x1: this.state.sx,
             y1: this.state.sy,
             x2,
             y2,
           });
-          this.setState(s => ({
-            crntShape: {
-              ...s.crntShape,
-              attributes: { ...s.crntShape.attributes, ...obj },
-            },
-          }));
           break;
         }
         case 'circle': {
-          const obj = createTempCircle({
+          obj = createTempCircle({
             x1: this.state.sx,
             y1: this.state.sy,
             x2,
             y2,
           });
-          this.setState(s => ({
-            crntShape: {
-              ...s.crntShape,
-              attributes: { ...s.crntShape.attributes, ...obj },
-            },
-          }));
           break;
         }
-
         default:
           break;
+      }
+      if (obj) {
+        this.setState(s => ({
+          crntShape: {
+            ...s.crntShape,
+            attributes: { ...s.crntShape.attributes, ...obj },
+          },
+        }));
       }
     }
   }
