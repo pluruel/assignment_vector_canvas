@@ -10,6 +10,7 @@ import {
   createCircle,
   createTempCircle,
   createPolygon,
+  createPolyline,
 } from '../lib/models';
 import { stringify } from 'svgson';
 
@@ -20,7 +21,7 @@ class SVGCanvas extends Component {
   ref = React.createRef();
   state = {
     crntShape: null,
-    erasorMouseDown: false,
+    isMouseDown: false,
     // 첫 클릭 시 선택값
     sx: null,
     sy: null,
@@ -32,7 +33,7 @@ class SVGCanvas extends Component {
   }
 
   // 저장 로직
-  // setState는 비동기이기 때문에 현재 저장된 폼을 스프레드 식으로 뿌리고 id만 추가하여 Shape 에 추가
+  // setState는 비동기이기 때문에 현재 저장된 폼을 스프레드로 뿌리고 id만 추가하여 Shape 에 추가
   saveCrntShape() {
     this.props.addShape({ ...this.state.crntShape, id: this.props.objidx });
     this.setState({ crntShape: null });
@@ -40,7 +41,7 @@ class SVGCanvas extends Component {
 
   handleMouseDown(e) {
     const { crntShape } = this.state;
-    this.setState({ erasorMouseDown: true });
+    this.setState({ isMouseDown: true });
     const { x: x1, y: y1 } = this.getAbspos(e);
 
     if (crntShape) {
@@ -99,9 +100,18 @@ class SVGCanvas extends Component {
           obj = createPolygon({
             x: x1,
             y: y1,
-            fill: this.props.selectedColor,
+            stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
+          break;
+        case 'polyline':
+          obj = createPolyline({
+            x: x1,
+            y: y1,
+            stroke: this.props.selectedColor,
+            strokeWidth: this.props.selectedSize,
+          });
+
           break;
         default:
           obj = null;
@@ -123,7 +133,19 @@ class SVGCanvas extends Component {
   handleMouseMove(e) {
     const { crntShape } = this.state;
     const { x: x2, y: y2 } = this.getAbspos(e);
-    if (crntShape) {
+    if (this.state.isMouseDown) {
+      if (this.props.selectedTool === 'polyline' && crntShape) {
+        this.setState(s => ({
+          crntShape: {
+            ...s.crntShape,
+            attributes: {
+              ...s.crntShape.attributes,
+              points: s.crntShape.attributes.points.concat(` ${x2} ${y2}`),
+            },
+          },
+        }));
+      }
+    } else if (crntShape) {
       let obj = null;
       switch (this.props.selectedTool) {
         case 'line': {
@@ -174,14 +196,17 @@ class SVGCanvas extends Component {
     }
   }
 
-  onClick(e) {
-    return this.props.selectedTool === 'eraser' && this.state.erasorMouseDown
+  handleMouseOver(e) {
+    return this.props.selectedTool === 'eraser' && this.state.isMouseDown
       ? this.props.remove(e.id)
       : null;
   }
 
   handleMouseUp() {
-    this.setState({ erasorMouseDown: false });
+    this.setState({ isMouseDown: false });
+    if (this.props.selectedTool === 'polyline') {
+      this.saveCrntShape();
+    }
   }
 
   render() {
@@ -214,7 +239,7 @@ class SVGCanvas extends Component {
             return (
               <g
                 key={e.id}
-                onMouseOver={() => this.onClick(e)}
+                onMouseOver={() => this.handleMouseOver(e)}
                 dangerouslySetInnerHTML={{ __html: stringify(e) }}
               />
             );
