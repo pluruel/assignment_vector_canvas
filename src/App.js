@@ -12,6 +12,7 @@ import { undo, redo } from './modules/svgcanvas';
 import { connect } from 'react-redux';
 import SVGImport from './components/SVGImport';
 import SVGExport from './components/SVGExport';
+import Zoom from './containers/Zoom';
 
 const MainDiv = styled.div`
   display: flex;
@@ -44,7 +45,9 @@ function App({ undo, redo }) {
       <ParentDiv>
         <Header />
         <UpperPart>
+          <Zoom />
           <div style={{ marginLeft: 'auto' }} />
+
           <SizeSetter />
           <MdUndo onClick={() => undo()} />
           <MdRedo onClick={() => redo()} />
