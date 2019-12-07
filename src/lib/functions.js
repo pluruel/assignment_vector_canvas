@@ -17,10 +17,18 @@ export const move = ({ x1, y1, x2, y2, viewBox }) => {
   values[1] = values[1] - diffy;
 
   let nextViewBox = '';
-
   values.forEach(element => {
     nextViewBox += element + ' ';
   });
 
   return nextViewBox;
+};
+
+export const revisePosition = viewBox => {
+  const values = parseViewBox(viewBox);
+  const obj = {
+    xdiff: values[0],
+    ydiff: values[1],
+  };
+  return obj;
 };

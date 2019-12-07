@@ -15,7 +15,7 @@ import {
 import { stringify } from 'svgson';
 
 import { addShape, remove, changeCanvasView } from '../modules/svgcanvas';
-import { move } from '../lib/functions';
+import { move, revisePosition } from '../lib/functions';
 
 class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
@@ -28,10 +28,18 @@ class SVGCanvas extends Component {
     sy: null,
     initViewBox: null,
   };
-  // svg내의 위치 잡기
+  // Main svg내의 위치 잡기
   getAbspos({ clientX, clientY }) {
     const { top, left } = this.ref.current.getBoundingClientRect();
     return { x: clientX - left, y: clientY - top };
+  }
+
+  // 기준좌표 보정값
+  getRevisedAbspos({ clientX, clientY }) {
+    const { top, left } = this.ref.current.getBoundingClientRect();
+    const { xdiff, ydiff } = revisePosition(this.props.svg.attributes.viewBox);
+
+    return { x: clientX - left + xdiff, y: clientY - top + ydiff };
   }
 
   // 저장 로직
@@ -44,7 +52,7 @@ class SVGCanvas extends Component {
   handleMouseDown(e) {
     const { crntShape } = this.state;
     this.setState({ isMouseDown: true });
-    const { x: x1, y: y1 } = this.getAbspos(e);
+    const { x: x1, y: y1 } = this.getRevisedAbspos(e);
 
     if (crntShape) {
       if (this.props.selectedTool === 'polygon') {
@@ -59,7 +67,6 @@ class SVGCanvas extends Component {
         }));
         return;
       }
-
       this.saveCrntShape();
     } else {
       this.setState({ sx: x1, sy: y1 });
@@ -115,6 +122,8 @@ class SVGCanvas extends Component {
           });
           break;
         case 'mover':
+          const { x, y } = this.getAbspos(e);
+          this.setState({ sx: x, sy: y });
           this.setState({
             initViewBox: this.props.svg.attributes.viewBox,
           });
@@ -140,6 +149,8 @@ class SVGCanvas extends Component {
   handleMouseMove(e) {
     const { crntShape } = this.state;
     const { x: x2, y: y2 } = this.getAbspos(e);
+    const { x: rx, y: ry } = this.getRevisedAbspos(e);
+
     if (this.state.isMouseDown) {
       if (this.props.selectedTool === 'mover') {
         this.props.changeCanvasView(
@@ -157,7 +168,7 @@ class SVGCanvas extends Component {
             ...s.crntShape,
             attributes: {
               ...s.crntShape.attributes,
-              points: s.crntShape.attributes.points.concat(` ${x2} ${y2}`),
+              points: s.crntShape.attributes.points.concat(` ${rx} ${ry}`),
             },
           },
         }));
@@ -167,8 +178,8 @@ class SVGCanvas extends Component {
       switch (this.props.selectedTool) {
         case 'line': {
           obj = {
-            x2,
-            y2,
+            x2: rx,
+            y2: ry,
           };
           break;
         }
@@ -176,8 +187,8 @@ class SVGCanvas extends Component {
           obj = createTempRect({
             x1: this.state.sx,
             y1: this.state.sy,
-            x2,
-            y2,
+            x2: rx,
+            y2: ry,
           });
           break;
         }
@@ -185,8 +196,8 @@ class SVGCanvas extends Component {
           obj = createTempEllipse({
             x1: this.state.sx,
             y1: this.state.sy,
-            x2,
-            y2,
+            x2: rx,
+            y2: ry,
           });
           break;
         }
@@ -194,8 +205,8 @@ class SVGCanvas extends Component {
           obj = createTempCircle({
             x1: this.state.sx,
             y1: this.state.sy,
-            x2,
-            y2,
+            x2: rx,
+            y2: ry,
           });
           break;
         }
