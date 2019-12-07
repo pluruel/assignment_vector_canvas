@@ -47,7 +47,7 @@ const initialState = {
   },
   currentStep: 0,
   obj: [[]],
-  zoomRatio: 1,
+  zoomRatio: 1.0,
 };
 
 const svgcanvas = handleActions(

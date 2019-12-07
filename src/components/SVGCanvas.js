@@ -36,15 +36,20 @@ class SVGCanvas extends Component {
   // Main svg내의 위치 잡기
   getAbspos({ clientX, clientY }) {
     const { top, left } = this.ref.current.getBoundingClientRect();
+
     return { x: clientX - left, y: clientY - top };
   }
 
-  // 기준좌표 보정값
+  // 기준좌표 보정, 배율 보정 값 (그리기용)
   getRevisedAbspos({ clientX, clientY }) {
     const { top, left } = this.ref.current.getBoundingClientRect();
     const { xdiff, ydiff } = revisePosition(this.props.svg.attributes.viewBox);
+    const { zoomRatio } = this.props;
 
-    return { x: clientX - left + xdiff, y: clientY - top + ydiff };
+    return {
+      x: (clientX - left) / zoomRatio + xdiff,
+      y: (clientY - top) / zoomRatio + ydiff,
+    };
   }
 
   // 저장 로직
@@ -136,11 +141,13 @@ class SVGCanvas extends Component {
           this.props.changeCanvasView(
             zoomin({ x, y, viewBox: this.props.svg.attributes.viewBox }),
           );
+          this.props.setZoomRatio(this.props.zoomRatio * 2);
           break;
         case 'zoomout':
           this.props.changeCanvasView(
             zoomout({ x, y, viewBox: this.props.svg.attributes.viewBox }),
           );
+          this.props.setZoomRatio(this.props.zoomRatio / 2);
           break;
         default:
           obj = null;
@@ -173,6 +180,7 @@ class SVGCanvas extends Component {
             x2,
             y2,
             viewBox: this.state.initViewBox,
+            zoomRatio: this.props.zoomRatio,
           }),
         );
       } else if (this.props.selectedTool === 'polyline' && crntShape) {
