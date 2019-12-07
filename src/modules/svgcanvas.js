@@ -11,6 +11,7 @@ const IMPORTS = 'svgcanvas/IMPORTS';
 const EXPORTS = 'svgcanvas/EXPORTS';
 const INITIALSTATE = 'svgcanvas/INITIALSTATE';
 const CHANGE_CANVAS_VIEW = 'svgcanvas/CHANGE_CANVAS_VIEW';
+const SET_ZOOM_RATIO = 'svgcanvas/SET_ZOOM_RATIO';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
@@ -23,6 +24,7 @@ export const imports = createAction(IMPORTS);
 export const exports = createAction(EXPORTS);
 export const initialstate = createAction(INITIALSTATE);
 export const changeCanvasView = createAction(CHANGE_CANVAS_VIEW);
+export const setZoomRatio = createAction(SET_ZOOM_RATIO);
 
 const initialState = {
   selectedColor: '#000000',
@@ -45,6 +47,7 @@ const initialState = {
   },
   currentStep: 0,
   obj: [[]],
+  zoomRatio: 1,
 };
 
 const svgcanvas = handleActions(
@@ -112,6 +115,10 @@ const svgcanvas = handleActions(
           viewBox: action.payload,
         },
       },
+    }),
+    [SET_ZOOM_RATIO]: (state, action) => ({
+      ...state,
+      zoomRatio: action.payload,
     }),
   },
   initialState,

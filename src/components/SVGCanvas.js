@@ -14,8 +14,13 @@ import {
 } from '../lib/models';
 import { stringify } from 'svgson';
 
-import { addShape, remove, changeCanvasView } from '../modules/svgcanvas';
-import { move, revisePosition } from '../lib/functions';
+import {
+  addShape,
+  remove,
+  changeCanvasView,
+  setZoomRatio,
+} from '../modules/svgcanvas';
+import { move, revisePosition, zooming } from '../lib/functions';
 
 class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
@@ -53,7 +58,7 @@ class SVGCanvas extends Component {
     const { crntShape } = this.state;
     this.setState({ isMouseDown: true });
     const { x: rx, y: ry } = this.getRevisedAbspos(e);
-
+    const { x, y } = this.getAbspos(e);
     if (crntShape) {
       if (this.props.selectedTool === 'polygon') {
         this.setState(s => ({
@@ -122,12 +127,15 @@ class SVGCanvas extends Component {
           });
           break;
         case 'mover':
-          const { x, y } = this.getAbspos(e);
           this.setState({ sx: x, sy: y });
           this.setState({
             initViewBox: this.props.svg.attributes.viewBox,
           });
-
+          break;
+        case 'zoomer':
+          this.props.changeCanvasView(
+            zooming({ x, y, viewBox: this.props.svg.attributes.viewBox }),
+          );
           break;
         default:
           obj = null;
@@ -261,7 +269,13 @@ class SVGCanvas extends Component {
           height={svgattr.height}
           viewBox={svgattr.viewBox}
         >
-          <rect width="100%" height="100%" fill="white" />
+          <rect
+            x={svgattr.x}
+            y={svgattr.y}
+            width={svgattr.width}
+            height={svgattr.height}
+            fill="white"
+          />
 
           {this.props.objs[this.props.currentStep].map((e, idx) => {
             // 각각의 svg객체를 그룹으로 감싸고 인덱스를 부여
@@ -295,11 +309,13 @@ let mapStateToProps = ({ svgcanvas }) => ({
   selectedSize: svgcanvas.selectedSize,
   objidx: svgcanvas.objidx,
   svg: svgcanvas.svg,
+  zoomRatio: svgcanvas.zoomRatio,
 });
 const mapFunction = {
   addShape,
   remove,
   changeCanvasView,
+  setZoomRatio,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGCanvas);

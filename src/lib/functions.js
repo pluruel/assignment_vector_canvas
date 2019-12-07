@@ -7,6 +7,14 @@ export const parseViewBox = viewBoxString => {
 
 // }
 
+const posValsToViewBoxStr = values => {
+  let nextViewBox = '';
+  values.forEach(element => {
+    nextViewBox += element + ' ';
+  });
+  return nextViewBox;
+};
+
 export const move = ({ x1, y1, x2, y2, viewBox }) => {
   const diffx = x2 - x1;
   const diffy = y2 - y1;
@@ -16,12 +24,7 @@ export const move = ({ x1, y1, x2, y2, viewBox }) => {
   values[0] = values[0] - diffx;
   values[1] = values[1] - diffy;
 
-  let nextViewBox = '';
-  values.forEach(element => {
-    nextViewBox += element + ' ';
-  });
-
-  return nextViewBox;
+  return posValsToViewBoxStr(values);
 };
 
 export const revisePosition = viewBox => {
@@ -31,4 +34,14 @@ export const revisePosition = viewBox => {
     ydiff: values[1],
   };
   return obj;
+};
+
+export const zooming = ({ x, y, viewBox }) => {
+  let values = parseViewBox(viewBox);
+  values[0] = (x + values[0]) / 2;
+  values[1] = (y + values[1]) / 2;
+  values[2] = values[2] / 2;
+  values[3] = values[3] / 2;
+
+  return posValsToViewBoxStr(values);
 };

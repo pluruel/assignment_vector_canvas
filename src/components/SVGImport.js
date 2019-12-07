@@ -37,7 +37,7 @@ const SVGImport = ({ objidx, imports }) => (
   <input type="file" onChange={e => uploadFile(e, objidx, imports)} />
 );
 
-let mapStateToProps = ({ svgcanvas }) => ({
+const mapStateToProps = ({ svgcanvas }) => ({
   selectedTool: svgcanvas.selectedTool,
   objidx: svgcanvas.objidx,
 });
