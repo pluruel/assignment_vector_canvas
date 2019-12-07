@@ -10,7 +10,8 @@ const shapes = [
   'polygon',
   'polyline',
   'eraser',
-  'zoomer',
+  'zoomin',
+  'zoomout',
   'mover',
 ];
 
@@ -19,7 +20,6 @@ const ToolDiv = styled.div`
   height: 25px;
   margin-left: auto;
   margin-right: auto;
-
   padding: 2px;
 `;
 

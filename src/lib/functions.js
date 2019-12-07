@@ -36,12 +36,22 @@ export const revisePosition = viewBox => {
   return obj;
 };
 
-export const zooming = ({ x, y, viewBox }) => {
+export const zoomin = ({ x, y, viewBox }) => {
   let values = parseViewBox(viewBox);
   values[0] = (x + values[0]) / 2;
   values[1] = (y + values[1]) / 2;
   values[2] = values[2] / 2;
   values[3] = values[3] / 2;
+
+  return posValsToViewBoxStr(values);
+};
+
+export const zoomout = ({ x, y, viewBox }) => {
+  let values = parseViewBox(viewBox);
+  values[0] = x - values[2];
+  values[1] = y - values[3];
+  values[2] = values[2] * 2;
+  values[3] = values[3] * 2;
 
   return posValsToViewBoxStr(values);
 };

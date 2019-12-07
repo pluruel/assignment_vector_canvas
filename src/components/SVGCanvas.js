@@ -20,7 +20,7 @@ import {
   changeCanvasView,
   setZoomRatio,
 } from '../modules/svgcanvas';
-import { move, revisePosition, zooming } from '../lib/functions';
+import { move, revisePosition, zoomout, zoomin } from '../lib/functions';
 
 class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
@@ -132,9 +132,14 @@ class SVGCanvas extends Component {
             initViewBox: this.props.svg.attributes.viewBox,
           });
           break;
-        case 'zoomer':
+        case 'zoomin':
           this.props.changeCanvasView(
-            zooming({ x, y, viewBox: this.props.svg.attributes.viewBox }),
+            zoomin({ x, y, viewBox: this.props.svg.attributes.viewBox }),
+          );
+          break;
+        case 'zoomout':
+          this.props.changeCanvasView(
+            zoomout({ x, y, viewBox: this.props.svg.attributes.viewBox }),
           );
           break;
         default:
