@@ -67,13 +67,16 @@ const svgcanvas = handleActions(
     [ADD_SHAPE]: (state, action) => ({
       ...state,
       currentStep: state.currentStep + 1,
-      obj: {
-        ...state.obj,
-        [state.currentStep + 1]: [
-          ...state.obj[state.currentStep],
-          action.payload,
-        ],
-      },
+      obj: state.obj.concat([
+        state.obj[state.currentStep].concat(action.payload),
+      ]),
+      // obj: {
+      //   ...state.obj,
+      //   [state.currentStep + 1]: [
+      //     ...state.obj[state.currentStep],
+      //     action.payload,
+      //   ],
+      // },
       objidx: state.objidx + 1,
     }),
     [REMOVE]: (state, action) => ({
@@ -86,14 +89,26 @@ const svgcanvas = handleActions(
         ),
       },
     }),
-    [UNDO]: (state, action) => ({
-      ...state,
-      currentStep: state.currentStep - 1,
-    }),
-    [REDO]: (state, action) => ({
-      ...state,
-      currentStep: state.currentStep + 1,
-    }),
+    [UNDO]: (state, action) => {
+      if (state.currentStep > 0) {
+        return {
+          ...state,
+          currentStep: state.currentStep - 1,
+        };
+      } else {
+        return { ...state };
+      }
+    },
+    [REDO]: (state, action) => {
+      if (state.currentStep < state.obj.length - 1) {
+        return {
+          ...state,
+          currentStep: state.currentStep + 1,
+        };
+      } else {
+        return { ...state };
+      }
+    },
     [INITIALSTATE]: (state, action) => ({
       state: initialState,
     }),
