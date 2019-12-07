@@ -1,11 +1,11 @@
 import React from 'react';
 
 import { connect } from 'react-redux';
-import { imports } from '../modules/svgcanvas';
+import { imports, setZoomRatio } from '../modules/svgcanvas';
 import { parse } from 'svgson';
 import { parseViewBox } from '../lib/functions';
 
-const uploadFile = (event, objidx, imports) => {
+const uploadFile = (event, objidx, imports, setZoomRatio) => {
   let file = event.target.files[0];
   const fr = new FileReader();
   let cnt = objidx;
@@ -27,14 +27,18 @@ const uploadFile = (event, objidx, imports) => {
         })),
         objidx: cnt,
       });
+      setZoomRatio(1);
     });
   };
 
   fr.readAsText(file);
 };
 
-const SVGImport = ({ objidx, imports }) => (
-  <input type="file" onChange={e => uploadFile(e, objidx, imports)} />
+const SVGImport = ({ objidx, imports, setZoomRatio }) => (
+  <input
+    type="file"
+    onChange={e => uploadFile(e, objidx, imports, setZoomRatio)}
+  />
 );
 
 const mapStateToProps = ({ svgcanvas }) => ({
@@ -44,6 +48,7 @@ const mapStateToProps = ({ svgcanvas }) => ({
 
 const mapFunction = {
   imports,
+  setZoomRatio,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGImport);
