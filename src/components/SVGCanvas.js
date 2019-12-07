@@ -14,7 +14,8 @@ import {
 } from '../lib/models';
 import { stringify } from 'svgson';
 
-import { addShape, remove } from '../modules/svgcanvas';
+import { addShape, remove, changeCanvasView } from '../modules/svgcanvas';
+import { move } from '../lib/functions';
 
 class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
@@ -25,6 +26,7 @@ class SVGCanvas extends Component {
     // 첫 클릭 시 선택값
     sx: null,
     sy: null,
+    initViewBox: null,
   };
   // svg내의 위치 잡기
   getAbspos({ clientX, clientY }) {
@@ -111,6 +113,11 @@ class SVGCanvas extends Component {
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
+          break;
+        case 'mover':
+          this.setState({
+            initViewBox: this.props.svg.attributes.viewBox,
+          });
 
           break;
         default:
@@ -134,7 +141,17 @@ class SVGCanvas extends Component {
     const { crntShape } = this.state;
     const { x: x2, y: y2 } = this.getAbspos(e);
     if (this.state.isMouseDown) {
-      if (this.props.selectedTool === 'polyline' && crntShape) {
+      if (this.props.selectedTool === 'mover') {
+        this.props.changeCanvasView(
+          move({
+            x1: this.state.sx,
+            y1: this.state.sy,
+            x2,
+            y2,
+            viewBox: this.state.initViewBox,
+          }),
+        );
+      } else if (this.props.selectedTool === 'polyline' && crntShape) {
         this.setState(s => ({
           crntShape: {
             ...s.crntShape,
@@ -182,6 +199,7 @@ class SVGCanvas extends Component {
           });
           break;
         }
+
         default:
           break;
       }
@@ -270,6 +288,7 @@ let mapStateToProps = ({ svgcanvas }) => ({
 const mapFunction = {
   addShape,
   remove,
+  changeCanvasView,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGCanvas);

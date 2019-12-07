@@ -10,6 +10,8 @@ const shapes = [
   'polygon',
   'polyline',
   'eraser',
+  'zoomer',
+  'mover',
 ];
 
 const ToolDiv = styled.div`

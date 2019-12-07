@@ -10,6 +10,7 @@ const REMOVE = 'svgcanvas/REMOVE';
 const IMPORTS = 'svgcanvas/IMPORTS';
 const EXPORTS = 'svgcanvas/EXPORTS';
 const INITIALSTATE = 'svgcanvas/INITIALSTATE';
+const CHANGE_CANVAS_VIEW = 'svgcanvas/CHANGE_CANVAS_VIEW';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
@@ -21,6 +22,7 @@ export const redo = createAction(REDO);
 export const imports = createAction(IMPORTS);
 export const exports = createAction(EXPORTS);
 export const initialstate = createAction(INITIALSTATE);
+export const changeCanvasView = createAction(CHANGE_CANVAS_VIEW);
 
 const initialState = {
   selectedColor: '#000000',
@@ -100,6 +102,16 @@ const svgcanvas = handleActions(
       },
       svg: action.payload.svg,
       objidx: action.payload.objidx,
+    }),
+    [CHANGE_CANVAS_VIEW]: (state, action) => ({
+      ...state,
+      svg: {
+        ...state.svg,
+        attributes: {
+          ...state.svg.attributes,
+          viewBox: action.payload,
+        },
+      },
     }),
   },
   initialState,
