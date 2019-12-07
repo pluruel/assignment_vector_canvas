@@ -42,7 +42,7 @@ const SVGExport = ({ svg, obj }) => (
   <button onClick={() => downloadModule(svg, obj)}>Export</button>
 );
 
-let mapStateToProps = ({ svgcanvas }) => ({
+const mapStateToProps = ({ svgcanvas }) => ({
   svg: svgcanvas.svg,
   obj: svgcanvas.obj[svgcanvas.currentStep],
 });

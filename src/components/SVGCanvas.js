@@ -52,7 +52,7 @@ class SVGCanvas extends Component {
   handleMouseDown(e) {
     const { crntShape } = this.state;
     this.setState({ isMouseDown: true });
-    const { x: x1, y: y1 } = this.getRevisedAbspos(e);
+    const { x: rx, y: ry } = this.getRevisedAbspos(e);
 
     if (crntShape) {
       if (this.props.selectedTool === 'polygon') {
@@ -61,7 +61,7 @@ class SVGCanvas extends Component {
             ...s.crntShape,
             attributes: {
               ...s.crntShape.attributes,
-              points: s.crntShape.attributes.points.concat(` ${x1} ${y1}`),
+              points: s.crntShape.attributes.points.concat(` ${rx} ${ry}`),
             },
           },
         }));
@@ -69,54 +69,54 @@ class SVGCanvas extends Component {
       }
       this.saveCrntShape();
     } else {
-      this.setState({ sx: x1, sy: y1 });
+      this.setState({ sx: rx, sy: ry });
       let obj = null;
 
       switch (this.props.selectedTool) {
         case 'line':
           obj = createLine({
-            x1: x1,
-            y1: y1,
+            x1: rx,
+            y1: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
           break;
         case 'rect':
           obj = createRect({
-            x: x1,
-            y: y1,
+            x: rx,
+            y: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
           break;
         case 'ellipse':
           obj = createEllipse({
-            x: x1,
-            y: y1,
+            x: rx,
+            y: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
           break;
         case 'circle':
           obj = createCircle({
-            x: x1,
-            y: y1,
+            x: rx,
+            y: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
           break;
         case 'polygon':
           obj = createPolygon({
-            x: x1,
-            y: y1,
+            x: rx,
+            y: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
           break;
         case 'polyline':
           obj = createPolyline({
-            x: x1,
-            y: y1,
+            x: rx,
+            y: ry,
             stroke: this.props.selectedColor,
             strokeWidth: this.props.selectedSize,
           });
