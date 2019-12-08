@@ -11,6 +11,7 @@ svgson
 ## 시작 방법
 
 ```
+yarn install
 yarn start
 ```
 
