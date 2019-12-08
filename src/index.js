@@ -3,14 +3,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { createLogger } from 'redux-logger';
-import { createStore, applyMiddleware } from 'redux';
+// import { createLogger } from 'redux-logger';
+import { createStore } from 'redux';
 import { Provider } from 'react-redux';
 import rootReducer from './modules';
 
-const logger = createLogger();
+// const logger = createLogger();
 
-const store = createStore(rootReducer, applyMiddleware(logger));
+const store = createStore(rootReducer);
 
 ReactDOM.render(
   <Provider store={store}>

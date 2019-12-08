@@ -106,8 +106,6 @@ export const createTempEllipse = ({ x1, y1, x2, y2 }) => {
 };
 
 export const createCircle = ({ x, y, stroke, strokeWidth }) => {
-  console.log(stroke);
-  console.log(strokeWidth);
   const obj = {
     name: 'circle',
     type: 'element',

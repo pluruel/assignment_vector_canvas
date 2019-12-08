@@ -19,6 +19,9 @@ import {
   remove,
   changeCanvasView,
   setZoomRatio,
+  setCrntShape,
+  addPolyPoints,
+  fixAttrCrntShape,
 } from '../modules/svgcanvas';
 import { move, revisePosition, zoomout, zoomin } from '../lib/functions';
 
@@ -26,7 +29,6 @@ class SVGCanvas extends Component {
   // Svg영역 가져오는 코드
   ref = React.createRef();
   state = {
-    crntShape: null,
     isMouseDown: false,
     // 첫 클릭 시 선택값
     sx: null,
@@ -55,26 +57,18 @@ class SVGCanvas extends Component {
   // 저장 로직
   // setState는 비동기이기 때문에 현재 저장된 폼을 스프레드로 뿌리고 id만 추가하여 Shape 에 추가
   saveCrntShape() {
-    this.props.addShape({ ...this.state.crntShape, id: this.props.objidx });
-    this.setState({ crntShape: null });
+    this.props.addShape({ ...this.props.crntShape, id: this.props.objidx });
+    this.props.setCrntShape(null);
   }
 
   handleMouseDown(e) {
-    const { crntShape } = this.state;
+    const { crntShape } = this.props;
     this.setState({ isMouseDown: true });
     const { x: rx, y: ry } = this.getRevisedAbspos(e);
     const { x, y } = this.getAbspos(e);
     if (crntShape) {
       if (this.props.selectedTool === 'polygon') {
-        this.setState(s => ({
-          crntShape: {
-            ...s.crntShape,
-            attributes: {
-              ...s.crntShape.attributes,
-              points: s.crntShape.attributes.points.concat(` ${rx} ${ry}`),
-            },
-          },
-        }));
+        this.props.addPolyPoints(` ${rx} ${ry}`);
         return;
       }
       this.saveCrntShape();
@@ -152,22 +146,20 @@ class SVGCanvas extends Component {
         default:
           obj = null;
       }
-
-      this.setState(s => ({
-        ...s,
-        crntShape: obj,
-      }));
+      if (obj) {
+        this.props.setCrntShape(obj);
+      }
     }
   }
 
   handleMouseRightClick() {
-    if (this.props.selectedTool === 'polygon' && this.state.crntShape) {
+    if (this.props.selectedTool === 'polygon' && this.props.crntShape) {
       this.saveCrntShape();
     }
   }
 
   handleMouseMove(e) {
-    const { crntShape } = this.state;
+    const { crntShape } = this.props;
     const { x: x2, y: y2 } = this.getAbspos(e);
     const { x: rx, y: ry } = this.getRevisedAbspos(e);
 
@@ -184,15 +176,7 @@ class SVGCanvas extends Component {
           }),
         );
       } else if (this.props.selectedTool === 'polyline' && crntShape) {
-        this.setState(s => ({
-          crntShape: {
-            ...s.crntShape,
-            attributes: {
-              ...s.crntShape.attributes,
-              points: s.crntShape.attributes.points.concat(` ${rx} ${ry}`),
-            },
-          },
-        }));
+        this.props.addPolyPoints(` ${rx} ${ry}`);
       }
     } else if (crntShape) {
       let obj = null;
@@ -236,12 +220,7 @@ class SVGCanvas extends Component {
           break;
       }
       if (obj) {
-        this.setState(s => ({
-          crntShape: {
-            ...s.crntShape,
-            attributes: { ...s.crntShape.attributes, ...obj },
-          },
-        }));
+        this.props.fixAttrCrntShape(obj);
       }
     }
   }
@@ -300,11 +279,11 @@ class SVGCanvas extends Component {
               />
             );
           })}
-          {this.state.crntShape !== null ? (
+          {this.props.crntShape !== null ? (
             <g
               // onMouseOver={() => this.onClick(this.state.crntShape)}
               dangerouslySetInnerHTML={{
-                __html: stringify(this.state.crntShape),
+                __html: stringify(this.props.crntShape),
               }}
             />
           ) : null}
@@ -323,12 +302,16 @@ let mapStateToProps = ({ svgcanvas }) => ({
   objidx: svgcanvas.objidx,
   svg: svgcanvas.svg,
   zoomRatio: svgcanvas.zoomRatio,
+  crntShape: svgcanvas.crntShape,
 });
 const mapFunction = {
   addShape,
   remove,
   changeCanvasView,
   setZoomRatio,
+  setCrntShape,
+  addPolyPoints,
+  fixAttrCrntShape,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGCanvas);

@@ -12,6 +12,9 @@ const EXPORTS = 'svgcanvas/EXPORTS';
 const INITIALSTATE = 'svgcanvas/INITIALSTATE';
 const CHANGE_CANVAS_VIEW = 'svgcanvas/CHANGE_CANVAS_VIEW';
 const SET_ZOOM_RATIO = 'svgcanvas/SET_ZOOM_RATIO';
+const SET_CRNT_SHAPE = 'svgcanvas/SET_CRNT_SHAPE';
+const ADD_POLY_POINTS = 'svgcanvas/ADD_POLY_POINTS';
+const FIX_ATTR_CRNT_SHAPE = 'svgcanvas/FIX_ATTR_CRNT_SHAPE';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
@@ -25,6 +28,9 @@ export const exports = createAction(EXPORTS);
 export const initialstate = createAction(INITIALSTATE);
 export const changeCanvasView = createAction(CHANGE_CANVAS_VIEW);
 export const setZoomRatio = createAction(SET_ZOOM_RATIO);
+export const setCrntShape = createAction(SET_CRNT_SHAPE);
+export const addPolyPoints = createAction(ADD_POLY_POINTS);
+export const fixAttrCrntShape = createAction(FIX_ATTR_CRNT_SHAPE);
 
 const initialState = {
   selectedColor: '#000000',
@@ -48,6 +54,7 @@ const initialState = {
   currentStep: 0,
   obj: [[]],
   zoomRatio: 1.0,
+  crntShape: null,
 };
 
 const svgcanvas = handleActions(
@@ -59,6 +66,7 @@ const svgcanvas = handleActions(
     [SELECT_TOOL]: (state, action) => ({
       ...state,
       selectedTool: action.payload,
+      crntShape: null,
     }),
     [SELECT_SIZE]: (state, action) => ({
       ...state,
@@ -84,10 +92,12 @@ const svgcanvas = handleActions(
     [UNDO]: (state, action) => ({
       ...state,
       currentStep: state.currentStep - 1,
+      crntShape: null,
     }),
     [REDO]: (state, action) => ({
       ...state,
       currentStep: state.currentStep + 1,
+      crntShape: null,
     }),
     [INITIALSTATE]: (state, action) => ({
       state: initialState,
@@ -100,6 +110,7 @@ const svgcanvas = handleActions(
         .concat([action.payload.objs]),
       svg: action.payload.svg,
       objidx: action.payload.objidx,
+      crntShape: null,
     }),
     [CHANGE_CANVAS_VIEW]: (state, action) => ({
       ...state,
@@ -114,6 +125,27 @@ const svgcanvas = handleActions(
     [SET_ZOOM_RATIO]: (state, action) => ({
       ...state,
       zoomRatio: action.payload,
+    }),
+    [SET_CRNT_SHAPE]: (state, action) => ({
+      ...state,
+      crntShape: action.payload,
+    }),
+    [ADD_POLY_POINTS]: (state, action) => ({
+      ...state,
+      crntShape: {
+        ...state.crntShape,
+        attributes: {
+          ...state.crntShape.attributes,
+          points: state.crntShape.attributes.points.concat(action.payload),
+        },
+      },
+    }),
+    [FIX_ATTR_CRNT_SHAPE]: (state, action) => ({
+      ...state,
+      crntShape: {
+        ...state.crntShape,
+        attributes: { ...state.crntShape.attributes, ...action.payload },
+      },
     }),
   },
   initialState,
