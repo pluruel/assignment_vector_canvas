@@ -89,26 +89,14 @@ const svgcanvas = handleActions(
         ),
       },
     }),
-    [UNDO]: (state, action) => {
-      if (state.currentStep > 0) {
-        return {
-          ...state,
-          currentStep: state.currentStep - 1,
-        };
-      } else {
-        return { ...state };
-      }
-    },
-    [REDO]: (state, action) => {
-      if (state.currentStep < state.obj.length - 1) {
-        return {
-          ...state,
-          currentStep: state.currentStep + 1,
-        };
-      } else {
-        return { ...state };
-      }
-    },
+    [UNDO]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep - 1,
+    }),
+    [REDO]: (state, action) => ({
+      ...state,
+      currentStep: state.currentStep + 1,
+    }),
     [INITIALSTATE]: (state, action) => ({
       state: initialState,
     }),

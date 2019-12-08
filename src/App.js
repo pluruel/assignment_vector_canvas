@@ -39,7 +39,8 @@ const ParentDiv = styled.div`
   width: 720px;
 `;
 
-function App({ undo, redo }) {
+function App({ undo, redo, objLength, currentStep }) {
+  console.log(objLength + ' ' + currentStep);
   return (
     <div className="App">
       <ParentDiv>
@@ -49,8 +50,16 @@ function App({ undo, redo }) {
           <div style={{ marginLeft: 'auto' }} />
 
           <SizeSetter />
-          <MdUndo onClick={() => undo()} />
-          <MdRedo onClick={() => redo()} />
+          <MdUndo
+            onClick={() => {
+              return currentStep > 0 ? undo() : null;
+            }}
+          />
+          <MdRedo
+            onClick={() => {
+              return currentStep < objLength - 1 ? redo() : null;
+            }}
+          />
         </UpperPart>
         <MainDiv>
           <ToolSelector />
@@ -67,9 +76,14 @@ function App({ undo, redo }) {
   );
 }
 
+const mapStateToProps = ({ svgcanvas }) => ({
+  objLength: svgcanvas.obj.length,
+  currentStep: svgcanvas.currentStep,
+});
+
 const mapFunction = {
   undo,
   redo,
 };
 
-export default connect(null, mapFunction)(App);
+export default connect(mapStateToProps, mapFunction)(App);
