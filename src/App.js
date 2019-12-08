@@ -1,28 +1,11 @@
 import React from 'react';
 import './App.css';
-import SVGCanvas from './components/SVGCanvas';
-import ColorSelector from './containers/ColorSelector';
 import styled from 'styled-components';
-import ToolSelector from './containers/ToolSelector';
 import Header from './containers/Header';
 
-import { MdUndo, MdRedo } from 'react-icons/md';
-import SizeSetter from './components/SizeSetter';
-import { undo, redo } from './modules/svgcanvas';
-import { connect } from 'react-redux';
-import SVGImport from './components/SVGImport';
-import SVGExport from './components/SVGExport';
-import Zoom from './containers/Zoom';
-
-const MainDiv = styled.div`
-  display: flex;
-`;
-const UpperPart = styled.div`
-  display: flex;
-`;
-const LowerPart = styled.div`
-  display: flex;
-`;
+import UpperPartContainer from './containers/UpperPartContainer';
+import MainPartContainer from './containers/MainPartContainer';
+import FootterPartContainer from './containers/FootterPartContainer';
 
 const ParentDiv = styled.div`
   background-color: white;
@@ -39,50 +22,17 @@ const ParentDiv = styled.div`
   width: 720px;
 `;
 
-function App({ undo, redo, objLength, currentStep }) {
+function App() {
   return (
     <div className="App">
       <ParentDiv>
         <Header />
-        <UpperPart>
-          <Zoom />
-          <div style={{ marginLeft: 'auto' }} />
-
-          <SizeSetter />
-          <MdUndo
-            onClick={() => {
-              return currentStep > 0 ? undo() : null;
-            }}
-          />
-          <MdRedo
-            onClick={() => {
-              return currentStep < objLength - 1 ? redo() : null;
-            }}
-          />
-        </UpperPart>
-        <MainDiv>
-          <ToolSelector />
-          <ColorSelector />
-          <SVGCanvas />
-        </MainDiv>
-        <LowerPart>
-          <div style={{ marginLeft: 'auto' }} />
-          <SVGImport />
-          <SVGExport />
-        </LowerPart>
+        <UpperPartContainer />
+        <MainPartContainer />
+        <FootterPartContainer />
       </ParentDiv>
     </div>
   );
 }
 
-const mapStateToProps = ({ svgcanvas }) => ({
-  objLength: svgcanvas.obj.length,
-  currentStep: svgcanvas.currentStep,
-});
-
-const mapFunction = {
-  undo,
-  redo,
-};
-
-export default connect(mapStateToProps, mapFunction)(App);
+export default App;
