@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { selectColor } from '../modules/svgcanvas';
 
 const Zoom = ({ zoomRatio }) => {
-  return <div style={{ marginLeft: '90px' }}>x {zoomRatio}</div>;
+  return <div style={{ marginLeft: '82px' }}>x {zoomRatio}</div>;
 };
 
 const mapStateToProps = ({ svgcanvas }) => ({

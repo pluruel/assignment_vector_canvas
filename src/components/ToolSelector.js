@@ -15,7 +15,7 @@ const shapes = [
   'mover',
 ];
 
-const ToolDiv = styled.div`
+const ToolDiv = styled.img`
   border: solid 1px;
   height: 25px;
   margin-left: auto;
@@ -25,7 +25,7 @@ const ToolDiv = styled.div`
 
 const ToolContainer = styled.div`
   height: 39px;
-  width: 50px;
+  width: 38px;
 `;
 
 const SelectorDiv = styled.div`
@@ -44,9 +44,8 @@ const ToolSelector = ({ selectedTool, selectTool }) => (
               selectedTool === e ? 'solid black 2.5px ' : 'solid black 1px ',
           }}
           onClick={() => selectTool(e)}
-        >
-          {e}
-        </ToolDiv>
+          src={require(`../icons/${e}.png`)}
+        ></ToolDiv>
       </ToolContainer>
     ))}
   </SelectorDiv>
