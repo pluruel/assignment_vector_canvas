@@ -43,7 +43,9 @@ const ToolSelector = ({ selectedTool, selectTool }) => (
             border:
               selectedTool === e ? 'solid black 2.5px ' : 'solid black 1px ',
           }}
-          onClick={() => selectTool(e)}
+          onClick={() => {
+            selectTool(e);
+          }}
           src={require(`../icons/${e}.png`)}
         ></ToolDiv>
       </ToolContainer>

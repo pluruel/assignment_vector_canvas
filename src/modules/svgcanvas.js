@@ -12,6 +12,8 @@ const EXPORTS = 'svgcanvas/EXPORTS';
 const INITIALSTATE = 'svgcanvas/INITIALSTATE';
 const CHANGE_CANVAS_VIEW = 'svgcanvas/CHANGE_CANVAS_VIEW';
 const SET_ZOOM_RATIO = 'svgcanvas/SET_ZOOM_RATIO';
+const SET_IS_DRAWING = 'svgcanvas/SET_IS_DRAWING';
+const SET_IS_NOT_DRAWING = 'svgcanvas/SET_IS_NOT_DRAWING';
 
 export const selectColor = createAction(SELECT_COLOR);
 export const selectTool = createAction(SELECT_TOOL);
@@ -25,6 +27,8 @@ export const exports = createAction(EXPORTS);
 export const initialstate = createAction(INITIALSTATE);
 export const changeCanvasView = createAction(CHANGE_CANVAS_VIEW);
 export const setZoomRatio = createAction(SET_ZOOM_RATIO);
+export const setIsDrawing = createAction(SET_IS_DRAWING);
+export const setIsNotDrawing = createAction(SET_IS_NOT_DRAWING);
 
 const initialState = {
   selectedColor: '#000000',
@@ -48,6 +52,7 @@ const initialState = {
   currentStep: 0,
   obj: [[]],
   zoomRatio: 1.0,
+  isDrawing: false,
 };
 
 const svgcanvas = handleActions(
@@ -59,6 +64,7 @@ const svgcanvas = handleActions(
     [SELECT_TOOL]: (state, action) => ({
       ...state,
       selectedTool: action.payload,
+      isDrawing: false,
     }),
     [SELECT_SIZE]: (state, action) => ({
       ...state,
@@ -84,10 +90,12 @@ const svgcanvas = handleActions(
     [UNDO]: (state, action) => ({
       ...state,
       currentStep: state.currentStep - 1,
+      isDrawing: false,
     }),
     [REDO]: (state, action) => ({
       ...state,
       currentStep: state.currentStep + 1,
+      isDrawing: false,
     }),
     [INITIALSTATE]: (state, action) => ({
       state: initialState,
@@ -100,6 +108,7 @@ const svgcanvas = handleActions(
         .concat([action.payload.objs]),
       svg: action.payload.svg,
       objidx: action.payload.objidx,
+      isDrawing: false,
     }),
     [CHANGE_CANVAS_VIEW]: (state, action) => ({
       ...state,
@@ -114,6 +123,14 @@ const svgcanvas = handleActions(
     [SET_ZOOM_RATIO]: (state, action) => ({
       ...state,
       zoomRatio: action.payload,
+    }),
+    [SET_IS_DRAWING]: (state, action) => ({
+      ...state,
+      isDrawing: true,
+    }),
+    [SET_IS_NOT_DRAWING]: (state, action) => ({
+      ...state,
+      isDrawing: false,
     }),
   },
   initialState,

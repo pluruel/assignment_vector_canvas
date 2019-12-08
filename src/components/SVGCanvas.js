@@ -19,6 +19,8 @@ import {
   remove,
   changeCanvasView,
   setZoomRatio,
+  setIsDrawing,
+  setIsNotDrawing,
 } from '../modules/svgcanvas';
 import { move, revisePosition, zoomout, zoomin } from '../lib/functions';
 
@@ -61,10 +63,12 @@ class SVGCanvas extends Component {
 
   handleMouseDown(e) {
     const { crntShape } = this.state;
+    const { isDrawing, setIsDrawing, setIsNotDrawing } = this.props;
+
     this.setState({ isMouseDown: true });
     const { x: rx, y: ry } = this.getRevisedAbspos(e);
     const { x, y } = this.getAbspos(e);
-    if (crntShape) {
+    if (crntShape && isDrawing) {
       if (this.props.selectedTool === 'polygon') {
         this.setState(s => ({
           crntShape: {
@@ -77,6 +81,7 @@ class SVGCanvas extends Component {
         }));
         return;
       }
+      setIsNotDrawing();
       this.saveCrntShape();
     } else {
       this.setState({ sx: rx, sy: ry });
@@ -152,7 +157,7 @@ class SVGCanvas extends Component {
         default:
           obj = null;
       }
-
+      setIsDrawing();
       this.setState(s => ({
         ...s,
         crntShape: obj,
@@ -161,13 +166,19 @@ class SVGCanvas extends Component {
   }
 
   handleMouseRightClick() {
-    if (this.props.selectedTool === 'polygon' && this.state.crntShape) {
+    if (
+      this.props.selectedTool === 'polygon' &&
+      this.state.crntShape &&
+      this.props.setIsDrawing
+    ) {
+      this.props.setIsNotDrawing();
       this.saveCrntShape();
     }
   }
 
   handleMouseMove(e) {
     const { crntShape } = this.state;
+    const { isDrawing } = this.props;
     const { x: x2, y: y2 } = this.getAbspos(e);
     const { x: rx, y: ry } = this.getRevisedAbspos(e);
 
@@ -183,7 +194,11 @@ class SVGCanvas extends Component {
             zoomRatio: this.props.zoomRatio,
           }),
         );
-      } else if (this.props.selectedTool === 'polyline' && crntShape) {
+      } else if (
+        this.props.selectedTool === 'polyline' &&
+        crntShape &&
+        isDrawing
+      ) {
         this.setState(s => ({
           crntShape: {
             ...s.crntShape,
@@ -194,7 +209,7 @@ class SVGCanvas extends Component {
           },
         }));
       }
-    } else if (crntShape) {
+    } else if (crntShape && isDrawing) {
       let obj = null;
       switch (this.props.selectedTool) {
         case 'line': {
@@ -256,6 +271,7 @@ class SVGCanvas extends Component {
     this.setState({ isMouseDown: false });
     if (this.props.selectedTool === 'polyline') {
       this.saveCrntShape();
+      this.props.setIsNotDrawing();
     }
   }
 
@@ -323,12 +339,15 @@ let mapStateToProps = ({ svgcanvas }) => ({
   objidx: svgcanvas.objidx,
   svg: svgcanvas.svg,
   zoomRatio: svgcanvas.zoomRatio,
+  isDrawing: svgcanvas.isDrawing,
 });
 const mapFunction = {
   addShape,
   remove,
   changeCanvasView,
   setZoomRatio,
+  setIsDrawing,
+  setIsNotDrawing,
 };
 
 export default connect(mapStateToProps, mapFunction)(SVGCanvas);
