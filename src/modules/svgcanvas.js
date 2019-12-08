@@ -70,13 +70,6 @@ const svgcanvas = handleActions(
       obj: state.obj.concat([
         state.obj[state.currentStep].concat(action.payload),
       ]),
-      // obj: {
-      //   ...state.obj,
-      //   [state.currentStep + 1]: [
-      //     ...state.obj[state.currentStep],
-      //     action.payload,
-      //   ],
-      // },
       objidx: state.objidx + 1,
     }),
     [REMOVE]: (state, action) => ({
@@ -102,10 +95,8 @@ const svgcanvas = handleActions(
     }),
     [IMPORTS]: (state, action) => ({
       ...state,
-      obj: {
-        ...state.obj,
-        [state.currentStep]: action.payload.objs,
-      },
+      currentStep: state.currentStep + 1,
+      obj: state.obj.concat([action.payload.objs]),
       svg: action.payload.svg,
       objidx: action.payload.objidx,
     }),

@@ -40,7 +40,6 @@ const ParentDiv = styled.div`
 `;
 
 function App({ undo, redo, objLength, currentStep }) {
-  console.log(objLength + ' ' + currentStep);
   return (
     <div className="App">
       <ParentDiv>
